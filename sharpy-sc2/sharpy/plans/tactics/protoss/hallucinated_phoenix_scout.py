@@ -56,7 +56,7 @@ class HallucinatedPhoenixScout(ActBase):
             # Phoenix does not exist anymore
             self.current_phoenix_tag = None
 
-        phoenixes = self.roles.get_types_from({UnitTypeId.PHOENIX}, UnitTask.Hallucination)
+        phoenixes = self.roles.get_types_from(UnitTypeId.PHOENIX)
 
         if phoenixes.exists:
             phoenix = phoenixes[0]
@@ -74,7 +74,7 @@ class HallucinatedPhoenixScout(ActBase):
 
         for sentry in sentries:
             # we don't want to actually spend all energy to make hallucination
-            if sentry.energy > HALLUCINATION_ENERGY_COST + 50 or (
+            if sentry.energy > HALLUCINATION_ENERGY_COST or (
                 another_sentry_with_energy_exists and sentry.energy > HALLUCINATION_ENERGY_COST
             ):
                 if self.ai.enemy_units.closer_than(15, sentry):
@@ -93,7 +93,7 @@ class HallucinatedPhoenixScout(ActBase):
 
     @property
     def should_send_scout(self) -> bool:
-        if self.build_detector and self.build_detector.rush_detected and self.ai.time < 5 * 60:
+        if self.build_detector and self.build_detector.rush_detected:
             return False  # no scout in first 5 min if rush incoming
         return self.last_created + self.time_interval < self.knowledge.ai.time
 

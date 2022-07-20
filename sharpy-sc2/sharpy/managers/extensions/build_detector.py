@@ -22,22 +22,51 @@ townhall_start_types = {
 
 
 class EnemyRushBuild(enum.IntEnum):
-    Macro = 0
-    Pool12 = 1
-    CannonRush = 2
-    ProxyRax = 3
-    OneBaseRax = 4
-    ProxyZealots = 5
-    Zealots = 6
-    OneHatcheryAllIn = 7
-    PoolFirst = 8
-    RoachRush = 9
-    Marauders = 10
-    HatchPool15_14 = 11
-    ProxyRobo = 12
-    RoboRush = 13
-    AdeptRush = 14
-    WorkerRush = 15
+    Start = 0
+    WorkerRush = 1
+
+    # PVP
+    CannonRush = 100
+    ProxyZealots = 101
+    ProxyRobo = 102
+    ProxyVoid = 103
+    ProxyFourGate = 104
+    PotentialProxy = 105
+
+    NexusFirst = 106
+    SingleGate = 107
+
+    RoboExpand = 110
+    StargateExpand = 111
+    TwilightExpand = 112
+
+    PVPMidGameMacro = 120
+
+    PVPLateGameMacro = 130
+
+    # PVZ
+    Pool12 = 200
+    Pool17 = 201
+    RoachRush = 202
+    LingBaneRush = 203
+
+    PVZMidGameMacro = 220
+
+    PVZLateGameMacro = 230
+
+    # PVT
+    ProxyTwoRaxMarine = 300
+    ProxyThreeRaxMarine = 301
+    ProxyReaper = 302
+    ProxyMarauders = 303
+    OneBaseTech = 304
+
+    ThreeRaxStim = 310
+    RaxFactPort = 311
+
+    PVTMidGameMacro = 320
+
+    PVTLateGameMacro = 330
 
 
 class EnemyMacroBuild(enum.IntEnum):
@@ -59,7 +88,7 @@ class BuildDetector(ManagerBase):
 
     def __init__(self):
         super().__init__()
-        self.rush_build = EnemyRushBuild.Macro
+        self.rush_build = EnemyRushBuild.Start
         self.macro_build = EnemyMacroBuild.StandardMacro
 
         # Dictionary of unit or structure types that have been handled. tag is key
@@ -88,7 +117,7 @@ class BuildDetector(ManagerBase):
 
     @property
     def rush_detected(self):
-        return self.rush_build != EnemyRushBuild.Macro
+        return self.rush_build != EnemyRushBuild.Start
 
     @property
     def worker_rush_detected(self):
@@ -97,7 +126,7 @@ class BuildDetector(ManagerBase):
     async def update(self):
         self._update_timings()
         self._rush_detection()
-        self._build_detection()
+        # self._build_detection()
 
     def _update_timings(self):
         # Let's update just seen structures for now
@@ -133,12 +162,12 @@ class BuildDetector(ManagerBase):
         """Returns true if the structure is the first townhall for a player."""
         # note: this does not handle a case if Terran flies its first CC to another position
         return (
-            structure.position == self.zone_manager.enemy_start_location and structure.type_id in townhall_start_types
+                structure.position == self.zone_manager.enemy_start_location and structure.type_id in townhall_start_types
         )
 
     async def post_update(self):
         if self.debug:
-            if self.rush_build != EnemyRushBuild.Macro:
+            if self.rush_build != EnemyRushBuild.Start:
                 msg = f"Enemy build: {self.rush_build.name}"
             else:
                 msg = f"Enemy build: {self.macro_build.name}"
@@ -186,76 +215,103 @@ class BuildDetector(ManagerBase):
             self._protoss_rushes()
 
     def _protoss_rushes(self):
-        if len(self.cache.enemy(UnitTypeId.NEXUS)) > 1:
-            self._set_rush(EnemyRushBuild.Macro)
-            return  # enemy has expanded, no rush detection
-        only_nexus_seen = False
 
-        for enemy_nexus in self.cache.enemy(UnitTypeId.NEXUS):  # type: Unit
-            if enemy_nexus.position == self.zone_manager.enemy_main_zone.center_location:
-                only_nexus_seen = True
-            else:
-                self._set_rush(EnemyRushBuild.Macro)
-                return  # enemy has build expansion, no rush detection
+        # around 55 seconds probe array enemy ramp
+        if self.ai.time < 60:
+            if self.rush_build == EnemyRushBuild.Start:
+                if len(self.cache.enemy(UnitTypeId.NEXUS)) > 1:
+                    self._set_rush(EnemyRushBuild.NexusFirst)
+                    return
+                only_nexus_seen = False
 
-        close_buildings = self.cache.enemy_in_range(self.ai.start_location, 80).structure
-        if close_buildings:
-            if close_buildings(UnitTypeId.ROBOTICSFACILITY):
-                self._set_rush(EnemyRushBuild.ProxyRobo)
+                for enemy_nexus in self.cache.enemy(UnitTypeId.NEXUS):
+                    if enemy_nexus.position == self.zone_manager.enemy_main_zone.center_location:
+                        only_nexus_seen = True
+                    else:
+                        self._set_rush(EnemyRushBuild.NexusFirst)
+                        return
+
+        if self.ai.time < 75:
+            if len(self.cache.enemy(UnitTypeId.FORGE)) > 0:
+                self._set_rush(EnemyRushBuild.CannonRush)
                 return
 
-        if self.ai.time < 125:
-            # early game and we have seen enemy Nexus
-            close_gateways = (
-                self.ai.enemy_structures(UnitTypeId.GATEWAY)
-                .closer_than(30, self.zone_manager.enemy_main_zone.center_location)
-                .amount
-            )
-            core = self.ai.enemy_structures(UnitTypeId.CYBERNETICSCORE).exists
+        if 74 < self.ai.time < 75:
+            if self.rush_build == EnemyRushBuild.Start:
+                if len(self.cache.enemy(UnitTypeId.PYLON)) < 1:
+                    self._set_rush(EnemyRushBuild.ProxyZealots)
+                    return
+                if len(self.cache.enemy(UnitTypeId.GATEWAY)) == 1 \
+                        and len(self.cache.enemy(UnitTypeId.CYBERNETICSCORE)) == 1 \
+                        and len(self.cache.enemy(UnitTypeId.ASSIMILATOR)) == 1:
+                    self._set_rush(EnemyRushBuild.SingleGate)
+                    return
 
-            gates = self.cache.enemy(UnitTypeId.GATEWAY).amount
-            robos = self.cache.enemy(UnitTypeId.ROBOTICSFACILITY).amount
-            gas = self.cache.enemy(UnitTypeId.ASSIMILATOR).amount
+        if 60+45 < self.ai.time < 60+50:
+            if self.rush_build == EnemyRushBuild.Start:
+                if len(self.cache.enemy(UnitTypeId.PYLON)) < 2:
+                    self._set_rush(EnemyRushBuild.PotentialProxy)
+                    return
 
-            if self.ai.time > 110 and close_gateways == 0 and not core and only_nexus_seen:
-                self._set_rush(EnemyRushBuild.ProxyZealots)
+        if self.ai.time < 60*2+20:
+            if len(self.cache.enemy(UnitTypeId.GATEWAY)) > 2:
+                self._set_rush(EnemyRushBuild.ProxyFourGate)
+                return
 
-            if gates > 2:
-                if gas == 1:
-                    self._set_rush(EnemyRushBuild.AdeptRush)
-                elif gas == 0:
-                    self._set_rush(EnemyRushBuild.Zealots)
-            elif gates + robos > 2:
-                self._set_rush(EnemyRushBuild.RoboRush)
-            # if self.ai.enemy_structures(UnitTypeId.FORGE).exists:
-            #     self._set_rush(EnemyRushBuild.CannonRush)
+        close_buildings = self.cache.enemy_in_range(self.ai.start_location, 80).structure
+        if self.rush_build == EnemyRushBuild.PotentialProxy or self.rush_build == EnemyRushBuild.Start:
+            if close_buildings:
+                if close_buildings(UnitTypeId.ROBOTICSFACILITY):
+                    self._set_rush(EnemyRushBuild.ProxyRobo)
+                    return
+                if close_buildings(UnitTypeId.STARGATE):
+                    self._set_rush(EnemyRushBuild.ProxyVoid)
+                    return
+                if close_buildings(UnitTypeId.GATEWAY):
+                    self._set_rush(EnemyRushBuild.ProxyFourGate)
+                    return
+
+        if 3*60+30 < self.ai.time < 4*60:
+            if self.rush_build == EnemyRushBuild.Start:
+                if len(self.cache.enemy(UnitTypeId.ROBOTICSFACILITY)) > 0:
+                    self._set_rush(EnemyRushBuild.RoboExpand)
+                    return
+                if len(self.cache.enemy(UnitTypeId.STARGATE)) > 0:
+                    self._set_rush(EnemyRushBuild.StargateExpand)
+                    return
+                if len(self.cache.enemy(UnitTypeId.TWILIGHTCOUNCIL)) > 0:
+                    self._set_rush(EnemyRushBuild.TwilightExpand)
+                    return
+                if len(self.cache.enemy(UnitTypeId.GATEWAY)) > 2:
+                    self.rush_build(EnemyRushBuild.ProxyFourGate)
+                    return
 
     def _terran_rushes(self):
         only_cc_seen = False
 
         for enemy_cc in self.cache.enemy(
-            [UnitTypeId.COMMANDCENTER, UnitTypeId.ORBITALCOMMAND, UnitTypeId.PLANETARYFORTRESS]
+                [UnitTypeId.COMMANDCENTER, UnitTypeId.ORBITALCOMMAND, UnitTypeId.PLANETARYFORTRESS]
         ):  # type: Unit
             if enemy_cc.position == self.zone_manager.enemy_main_zone.center_location:
                 only_cc_seen = True
             else:
-                return self._set_rush(EnemyRushBuild.Macro)  # enemy has expanded, no rush detection
+                return self._set_rush(EnemyRushBuild.Start)  # enemy has expanded, no rush detection
 
         if self.ai.time < 120:
             # early game and we have seen enemy CC
             close_barracks = (
                 self.ai.enemy_structures(UnitTypeId.BARRACKS)
-                .closer_than(30, self.zone_manager.enemy_main_zone.center_location)
-                .amount
+                    .closer_than(30, self.zone_manager.enemy_main_zone.center_location)
+                    .amount
             )
 
             barracks = self.ai.enemy_structures(UnitTypeId.BARRACKS).amount
             factories = self.ai.enemy_structures(UnitTypeId.FACTORY).amount
 
             if (
-                self.ai.enemy_structures(UnitTypeId.BARRACKSTECHLAB).amount == barracks
-                and barracks >= 1
-                and factories == 0
+                    self.ai.enemy_structures(UnitTypeId.BARRACKSTECHLAB).amount == barracks
+                    and barracks >= 1
+                    and factories == 0
             ):
                 return self._set_rush(EnemyRushBuild.Marauders)
 
@@ -269,10 +325,10 @@ class BuildDetector(ManagerBase):
         hatcheries: Units = self.cache.enemy(UnitTypeId.HATCHERY)
         if len(hatcheries) > 2 or self.enemy_units_manager.enemy_worker_count > 20:
             # enemy has expanded TWICE or has large amount of workers, that's no rush
-            return self._set_rush(EnemyRushBuild.Macro)
+            return self._set_rush(EnemyRushBuild.Start)
 
         if self.building_started_before(UnitTypeId.ROACHWARREN, 130) or (
-            self.ai.time < 160 and self.cache.enemy(UnitTypeId.ROACH)
+                self.ai.time < 160 and self.cache.enemy(UnitTypeId.ROACH)
         ):
             return self._set_rush(EnemyRushBuild.RoachRush)
 
@@ -287,10 +343,10 @@ class BuildDetector(ManagerBase):
             return self._set_rush(EnemyRushBuild.PoolFirst)
 
         if (
-            self.ai.time > 120
-            and self.ai.time < 130
-            and self.ai.enemy_structures(UnitTypeId.HATCHERY).amount == 1
-            and self.building_started_before(UnitTypeId.SPAWNINGPOOL, 70)
+                self.ai.time > 120
+                and self.ai.time < 130
+                and self.ai.enemy_structures(UnitTypeId.HATCHERY).amount == 1
+                and self.building_started_before(UnitTypeId.SPAWNINGPOOL, 70)
         ):
             return self._set_rush(EnemyRushBuild.OneHatcheryAllIn)
 
@@ -303,11 +359,11 @@ class BuildDetector(ManagerBase):
                 return self._set_rush(EnemyRushBuild.Pool12)
 
         if (
-            self.started(UnitTypeId.HATCHERY, 1) < 50
-            and self.started(UnitTypeId.EXTRACTOR) < 70
-            and self.started(UnitTypeId.SPAWNINGPOOL) < 70
-            and self.enemy_units_manager.enemy_worker_count < 17
-            # and self.cache.enemy(UnitTypeId.LARVA).amount >= 3
+                self.started(UnitTypeId.HATCHERY, 1) < 50
+                and self.started(UnitTypeId.EXTRACTOR) < 70
+                and self.started(UnitTypeId.SPAWNINGPOOL) < 70
+                and self.enemy_units_manager.enemy_worker_count < 17
+                # and self.cache.enemy(UnitTypeId.LARVA).amount >= 3
         ):
             return self._set_rush(EnemyRushBuild.HatchPool15_14)
 
@@ -323,11 +379,11 @@ class BuildDetector(ManagerBase):
                 self.macro_build = EnemyMacroBuild.Banshees
             elif self.ai.time > 7 * 60 and self.ai.time < 8 * 60:
                 mmm_check = (
-                    self.enemy_units_manager.unit_count(UnitTypeId.MARINE)
-                    > self.enemy_units_manager.unit_count(UnitTypeId.MARAUDER)
-                    > 15
-                    > self.enemy_units_manager.unit_count(UnitTypeId.MEDIVAC)
-                    > 0
+                        self.enemy_units_manager.unit_count(UnitTypeId.MARINE)
+                        > self.enemy_units_manager.unit_count(UnitTypeId.MARAUDER)
+                        > 15
+                        > self.enemy_units_manager.unit_count(UnitTypeId.MEDIVAC)
+                        > 0
                 )
                 if mmm_check:
                     self.macro_build = EnemyMacroBuild.Mmm

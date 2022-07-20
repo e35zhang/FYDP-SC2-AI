@@ -11,7 +11,7 @@ from sharpy.tools import IntervalFunc
 from sharpy.utils import map_to_point2s_minerals
 from sc2.position import Point2
 from sc2.unit import Unit
-
+from sc2.data import Race
 
 class WorkerScout(ActBase):
     """
@@ -36,11 +36,13 @@ class WorkerScout(ActBase):
         # is first on the list, with descending priority, ie.
         # least important location is last.
         self.scout_locations: List[Point2] = []
+        self.enemy_race = Race.Random
 
     async def start(self, knowledge: Knowledge):
         await super().start(knowledge)
         self.zone_manager = knowledge.get_required_manager(IZoneManager)
         self.position_updater = IntervalFunc(knowledge.ai, self.update_position, 1)
+        self.enemy_race = knowledge.ai.enemy_race
 
     def update_position(self):
         if self.scout:
@@ -77,11 +79,15 @@ class WorkerScout(ActBase):
 
         enemy_base_found = self.zone_manager.enemy_start_location_found
 
-        enemy_base_scouted = (
+        enemy_base_scouted_enough = (
             enemy_base_found
             and self.zone_manager.enemy_main_zone.is_scouted_at_least_once
             and self.zone_manager.enemy_main_zone.scout_last_circled
         )
+
+        if self.enemy_race == Race.Protoss:
+            enemy_base_scouted_enough = (enemy_base_scouted_enough and
+                                         self.knowledge.ai.time >= 1 * 60 + 45)
 
         enemy_base_blocked = (
             enemy_base_found
@@ -89,7 +95,7 @@ class WorkerScout(ActBase):
             and await self.target_unreachable(self.zone_manager.enemy_main_zone.behind_mineral_position_center)
         )
 
-        if enemy_base_scouted or enemy_base_blocked:
+        if enemy_base_scouted_enough or enemy_base_blocked:
             # When enemy found and enemy main base scouted, scout nearby expansions
             self.scout_enemy_expansions()
         elif (
@@ -132,7 +138,7 @@ class WorkerScout(ActBase):
 
     def circle_location(self, location: Point2):
         self.scout_locations.clear()
-        self.scout_locations = points_on_circumference_sorted(location, self.scout.position, 10, 30)
+        self.scout_locations = points_on_circumference_sorted(location, self.scout.position, 12, 30)
         self.print(f"Circling location {location}")
 
     def scout_enemy_expansions(self):
