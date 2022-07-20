@@ -69,18 +69,6 @@ class EnemyRushBuild(enum.IntEnum):
     PVTLateGameMacro = 330
 
 
-class EnemyMacroBuild(enum.IntEnum):
-    StandardMacro = 0
-    BattleCruisers = 1
-    Banshees = 2
-    Tempests = 3
-    Carriers = 4
-    DarkTemplars = 5
-    Lurkers = 6
-    Mutalisks = 7
-    Mmm = 8
-
-
 class BuildDetector(ManagerBase):
     """Enemy build detector."""
 
@@ -89,7 +77,6 @@ class BuildDetector(ManagerBase):
     def __init__(self):
         super().__init__()
         self.rush_build = EnemyRushBuild.Start
-        self.macro_build = EnemyMacroBuild.StandardMacro
 
         # Dictionary of unit or structure types that have been handled. tag is key
         # Note that snapshots of units / structures have a different tag.
@@ -126,7 +113,6 @@ class BuildDetector(ManagerBase):
     async def update(self):
         self._update_timings()
         self._rush_detection()
-        # self._build_detection()
 
     def _update_timings(self):
         # Let's update just seen structures for now
@@ -162,15 +148,13 @@ class BuildDetector(ManagerBase):
         """Returns true if the structure is the first townhall for a player."""
         # note: this does not handle a case if Terran flies its first CC to another position
         return (
-                structure.position == self.zone_manager.enemy_start_location and structure.type_id in townhall_start_types
+                structure.position == self.zone_manager.enemy_start_location
+                and structure.type_id in townhall_start_types
         )
 
     async def post_update(self):
         if self.debug:
-            if self.rush_build != EnemyRushBuild.Start:
-                msg = f"Enemy build: {self.rush_build.name}"
-            else:
-                msg = f"Enemy build: {self.macro_build.name}"
+            msg = f"Enemy build: {self.rush_build.name}"
 
             if hasattr(self.ai, "plan"):
                 build_order = self.ai.plan
@@ -190,9 +174,6 @@ class BuildDetector(ManagerBase):
         self.print(f"POSSIBLE RUSH: {value.name}.")
 
     def _rush_detection(self):
-        if self.ai.time > 180:
-            # Past three minutes, early rushes no longer relevant
-            return
 
         if self.rush_build == EnemyRushBuild.WorkerRush:
             # Worker rush can never change to anything else
@@ -242,18 +223,26 @@ class BuildDetector(ManagerBase):
                     self._set_rush(EnemyRushBuild.ProxyZealots)
                     return
                 if len(self.cache.enemy(UnitTypeId.GATEWAY)) == 1 \
-                        and len(self.cache.enemy(UnitTypeId.CYBERNETICSCORE)) == 1 \
                         and len(self.cache.enemy(UnitTypeId.ASSIMILATOR)) == 1:
                     self._set_rush(EnemyRushBuild.SingleGate)
                     return
 
-        if 60+45 < self.ai.time < 60+50:
+        # 2 pylon timming
+        if 60 + 45 < self.ai.time < 60 + 50:
             if self.rush_build == EnemyRushBuild.Start:
-                if len(self.cache.enemy(UnitTypeId.PYLON)) < 2:
+                if len(self.cache.enemy(UnitTypeId.PYLON)) < 2 and \
+                        len(self.cache.enemy(UnitTypeId.NEXUS)) < 2:
                     self._set_rush(EnemyRushBuild.PotentialProxy)
                     return
 
-        if self.ai.time < 60*2+20:
+        # 2 nexus timming
+        if 2 * 60 + 30 < self.ai.time < 2 * 60 + 40:
+            if self.rush_build == EnemyRushBuild.PotentialProxy:
+                if len(self.cache.enemy(UnitTypeId.NEXUS)) > 1:
+                    self._set_rush(EnemyRushBuild.Start)
+                    return
+
+        if self.ai.time < 60 * 2 + 20:
             if len(self.cache.enemy(UnitTypeId.GATEWAY)) > 2:
                 self._set_rush(EnemyRushBuild.ProxyFourGate)
                 return
@@ -271,7 +260,7 @@ class BuildDetector(ManagerBase):
                     self._set_rush(EnemyRushBuild.ProxyFourGate)
                     return
 
-        if 3*60+30 < self.ai.time < 4*60:
+        if 3 * 60 + 30 < self.ai.time < 4 * 60:
             if self.rush_build == EnemyRushBuild.Start:
                 if len(self.cache.enemy(UnitTypeId.ROBOTICSFACILITY)) > 0:
                     self._set_rush(EnemyRushBuild.RoboExpand)
@@ -367,43 +356,6 @@ class BuildDetector(ManagerBase):
         ):
             return self._set_rush(EnemyRushBuild.HatchPool15_14)
 
-    def _build_detection(self):
-        if self.macro_build != EnemyMacroBuild.StandardMacro:
-            # Only set macro build once
-            return
-
-        if self.knowledge.enemy_race == Race.Terran:
-            if self.ai.time < 7 * 60 and self.cache.enemy(UnitTypeId.BATTLECRUISER):
-                self.macro_build = EnemyMacroBuild.BattleCruisers
-            elif self.ai.time < 7 * 60 and self.cache.enemy(UnitTypeId.BANSHEE):
-                self.macro_build = EnemyMacroBuild.Banshees
-            elif self.ai.time > 7 * 60 and self.ai.time < 8 * 60:
-                mmm_check = (
-                        self.enemy_units_manager.unit_count(UnitTypeId.MARINE)
-                        > self.enemy_units_manager.unit_count(UnitTypeId.MARAUDER)
-                        > 15
-                        > self.enemy_units_manager.unit_count(UnitTypeId.MEDIVAC)
-                        > 0
-                )
-                if mmm_check:
-                    self.macro_build = EnemyMacroBuild.Mmm
-
-        if self.knowledge.enemy_race == Race.Protoss:
-            if self.ai.time < 7 * 60 and self.cache.enemy(UnitTypeId.TEMPEST):
-                self.macro_build = EnemyMacroBuild.Tempests
-            if self.ai.time < 7 * 60 and self.cache.enemy(UnitTypeId.CARRIER):
-                self.macro_build = EnemyMacroBuild.Carriers
-            if self.ai.time < 7 * 60 and self.cache.enemy(UnitTypeId.DARKTEMPLAR):
-                self.macro_build = EnemyMacroBuild.DarkTemplars
-
-        if self.knowledge.enemy_race == Race.Zerg:
-            if self.ai.time < 7 * 60 and self.cache.enemy(UnitTypeId.MUTALISK):
-                self.macro_build = EnemyMacroBuild.Mutalisks
-            if self.ai.time < 7 * 60 and self.cache.enemy(UnitTypeId.LURKERMP):
-                self.macro_build = EnemyMacroBuild.Lurkers
-
-        if self.macro_build != EnemyMacroBuild.StandardMacro:
-            self.print(f"Enemy normal build recognized as {self.macro_build.name}")
 
     def building_started_before(self, type_id: UnitTypeId, start_time_ceiling: int) -> bool:
         """Returns true if a building of type type_id has been started before start_time_ceiling seconds."""

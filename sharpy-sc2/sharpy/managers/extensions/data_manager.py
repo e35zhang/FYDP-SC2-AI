@@ -9,7 +9,7 @@ from pathlib import Path
 from sc2.data import Result
 from sharpy.interfaces import IGameAnalyzer
 from sharpy.interfaces.data_manager import IDataManager
-from sharpy.managers.extensions.build_detector import EnemyRushBuild, EnemyMacroBuild, BuildDetector
+from sharpy.managers.extensions.build_detector import EnemyRushBuild, BuildDetector
 
 from sharpy.managers.core.manager_base import ManagerBase
 from sharpy.tools import IntervalFunc
@@ -99,16 +99,6 @@ class DataManager(ManagerBase, IDataManager):
         elif self.result.result != -1 and self.game_analyzer.predicting_defeat:
             self.write_defeat()
 
-    @property
-    def last_enemy_build(self) -> Tuple[Union[int, EnemyRushBuild], Union[int, EnemyMacroBuild]]:
-        if (
-            not self.last_result
-            or not hasattr(self.last_result, "enemy_macro_build")
-            or not hasattr(self.last_result, "enemy_build")
-        ):
-            return EnemyRushBuild.Macro, EnemyMacroBuild.StandardMacro
-
-        return self.last_result.enemy_build, self.last_result.enemy_macro_build
 
     def set_build(self, build_name: str):
         self.result.build_used = build_name
@@ -124,7 +114,6 @@ class DataManager(ManagerBase, IDataManager):
     def solve_write_data(self):
         if self.build_detector:
             self.result.enemy_build = int(self.build_detector.rush_build)
-            self.result.enemy_macro_build = int(self.build_detector.macro_build)
         self.result.game_duration = self.ai.time
         self.write_results()
 

@@ -35,17 +35,17 @@ def pvp_start_up() -> BuildOrder:
             ProtossUnit(UnitTypeId.SENTRY, 1, only_once=True, priority=True),
             ProtossUnit(UnitTypeId.STALKER, 3, only_once=True, priority=True),
             Expand(2),
-            ProtossUnit(UnitTypeId.STALKER, to_count=40, priority=True),
+            ProtossUnit(UnitTypeId.STALKER, priority=True),
             AutoPylon(),
             AutoWorker(),
         ),
-        common_strategy(),
+        common_strategy()
+
     )
 
 
-def common_strategy() -> SequentialList:
-    return SequentialList(
-        SpeedMining(),
+def common_strategy() -> BuildOrder:
+    return BuildOrder(
         DistributeWorkers(),
         PlanHallucination(),
         HallucinatedPhoenixScout(),
@@ -54,5 +54,5 @@ def common_strategy() -> SequentialList:
         PlanZoneGather(),
         PlanZoneDefense(),
         PlanZoneAttack(),
-        PlanFinishEnemy(),
+        PlanFinishEnemy()
     )

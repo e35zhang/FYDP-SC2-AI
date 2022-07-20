@@ -8,9 +8,12 @@ from sharpy.knowledges import KnowledgeBot
 from sharpy.managers import ManagerBase
 
 from sharpy.managers.extensions import DataManager, BuildDetector
+from sharpy.managers.extensions.build_detector import EnemyRushBuild
 from sharpy.plans.protoss import *
 
 from .build_orders.pvp.start_up import pvp_start_up
+from .build_orders.pvp.counterCannonRush import counterCannonRush
+from .build_orders.pvp.counterNexusFirst import counterNexusFirst
 
 
 class ProtossBot(KnowledgeBot):
@@ -26,8 +29,6 @@ class ProtossBot(KnowledgeBot):
             "pvr": lambda: self.pvr_build()
         }
         self.build_name = build_name
-        self.enemy_last_intel = None
-        self.enemy_intel = None
 
     def configure_managers(self) -> Optional[List[ManagerBase]]:
         return [BuildDetector()]
@@ -47,20 +48,30 @@ class ProtossBot(KnowledgeBot):
         return self.builds[self.build_name]()
 
     async def on_step(self, iteration):
-        self.enemy_intel = self.build_detector.macro_build
-
-        if self.enemy_last_intel is None:
-            self.enemy_last_intel = self.enemy_intel
-
-        if self.enemy_last_intel != self.enemy_intel:
-            str = "Looks like you wanna "
-            str += self.enemy_intel.name
-            self.enemy_last_intel = self.enemy_intel
-            await self.chat_send(str)
         return await super().on_step(iteration)
 
     def pvp_build(self) -> BuildOrder:
-        return pvp_start_up()
+        return BuildOrder(
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.Start, pvp_start_up()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.WorkerRush, counterNexusFirst()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.CannonRush, counterCannonRush()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.NexusFirst, counterNexusFirst()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.SingleGate, counterNexusFirst()),
+
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.ProxyZealots, counterNexusFirst()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.ProxyRobo, counterNexusFirst()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.ProxyVoid, counterNexusFirst()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.ProxyFourGate, counterNexusFirst()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PotentialProxy, counterNexusFirst()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.RoboExpand, counterNexusFirst()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.StargateExpand, counterNexusFirst()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.TwilightExpand, counterNexusFirst()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PVPMidGameMacro, counterNexusFirst()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PVPLateGameMacro, counterNexusFirst()),
+
+
+
+        )
 
     def pvt_build(self) -> BuildOrder:
         return self.pvp_build()
