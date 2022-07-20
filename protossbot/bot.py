@@ -7,9 +7,11 @@ from sc2.data import Race
 from sharpy.knowledges import KnowledgeBot
 from sharpy.managers import ManagerBase
 
-# This imports all the usual components for protoss bots
 from sharpy.managers.extensions import DataManager, BuildDetector
 from sharpy.plans.protoss import *
+
+from .build_orders.pvp.start_up import pvp_start_up
+
 
 class ProtossBot(KnowledgeBot):
     data_manager: DataManager
@@ -57,98 +59,14 @@ class ProtossBot(KnowledgeBot):
             await self.chat_send(str)
         return await super().on_step(iteration)
 
-    def pvz_build(self) -> BuildOrder:
-        return BuildOrder(
-            AutoWorker(),
-            AutoPylon(),
-
-            WorkerScout(),
-            ChronoUnit(UnitTypeId.IMMORTAL, UnitTypeId.ROBOTICSFACILITY, 10),
-
-            GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=2, priority=True),
-            GridBuilding(unit_type=UnitTypeId.CYBERNETICSCORE, to_count=1, priority=True),
-            BuildGas(2),
-            GridBuilding(unit_type=UnitTypeId.ROBOTICSFACILITY, to_count=1, priority=True),
-            ProtossUnit(UnitTypeId.STALKER, to_count=3, priority=True),
-            Tech(UpgradeId.WARPGATERESEARCH),
-            Step(UnitExists(UnitTypeId.IMMORTAL), Expand(2, priority=True)),
-            Step(UnitExists(UnitTypeId.PROBE, 36),
-                 BuildGas(4)),
-            Step(UnitExists(UnitTypeId.NEXUS, 2),
-                 GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=6, priority=True)),
-
-            Step(EnemyUnitExists(UnitTypeId.VOIDRAY),
-                 ProtossUnit(UnitTypeId.STALKER, priority=True, to_count=16)),
-            Step(EnemyUnitExists(UnitTypeId.IMMORTAL),
-                 ProtossUnit(UnitTypeId.IMMORTAL, priority=True, to_count=5)),
-            Step(EnemyUnitExists(UnitTypeId.STALKER, 6),
-                 ProtossUnit(UnitTypeId.IMMORTAL, priority=True, to_count=5)),
-
-            ProtossUnit(UnitTypeId.OBSERVER, priority=True, to_count=1),
-            ProtossUnit(UnitTypeId.STALKER, priority=True),
-            ProtossUnit(UnitTypeId.SENTRY, to_count=1, priority=True),
-            ProtossUnit(UnitTypeId.IMMORTAL, to_count=2, priority=True),
-            self.pvz_create_common_strategy()
-        )
+    def pvp_build(self) -> BuildOrder:
+        return pvp_start_up()
 
     def pvt_build(self) -> BuildOrder:
-        return BuildOrder(
-            self.pvz_build(),
-            self.pvt_create_common_strategy()
-        )
+        return self.pvp_build()
 
-        # these are pvp
-
-    def pvp_build(self) -> BuildOrder:
-        return BuildOrder(
-            self.pvz_build(),
-            self.pvp_create_common_strategy()
-        )
+    def pvz_build(self) -> BuildOrder:
+        return self.pvp_build()
 
     def pvr_build(self) -> BuildOrder:
-        return BuildOrder(
-            self.pvz_build(),
-            self.pvz_create_common_strategy()
-        )
-
-    def pvp_create_common_strategy(self) -> SequentialList:
-        return SequentialList(
-            DistributeWorkers(),
-            PlanHallucination(),
-            HallucinatedPhoenixScout(),
-            PlanCancelBuilding(),
-            WorkerRallyPoint(),
-            PlanZoneGather(),
-            DoubleAdeptScout(adepts_to_start=1),
-            PlanZoneDefense(),
-            PlanZoneAttack(),
-            PlanFinishEnemy()
-        )
-
-    def pvz_create_common_strategy(self) -> SequentialList:
-        return SequentialList(
-            DistributeWorkers(),
-            PlanHallucination(),
-            HallucinatedPhoenixScout(),
-            PlanCancelBuilding(),
-            WorkerRallyPoint(),
-            PlanZoneGather(),
-            DoubleAdeptScout(adepts_to_start=1),
-            PlanZoneDefense(),
-            PlanZoneAttack(),
-            PlanFinishEnemy()
-        )
-
-    def pvt_create_common_strategy(self) -> SequentialList:
-        return SequentialList(
-            DistributeWorkers(),
-            PlanHallucination(),
-            HallucinatedPhoenixScout(),
-            PlanCancelBuilding(),
-            WorkerRallyPoint(),
-            PlanZoneGather(),
-            DoubleAdeptScout(adepts_to_start=1),
-            PlanZoneDefense(),
-            PlanZoneAttack(),
-            PlanFinishEnemy()
-        )
+        return self.pvp_build()
