@@ -66,9 +66,9 @@ class WarpUnit(ActBase):
                     break
 
             nexuses: Units = self.cache.own(UnitTypeId.NEXUS)
-            if nexuses:
+            #if nexuses:
                 # Reset position to nexus to reduce the possibility of warping stuck units in.
-                target_point = nexuses.closest_to(target_point).position
+            #    target_point = nexuses.closest_to(target_point).position
 
             near_position = self.cache.own(UnitTypeId.PYLON).ready.closest_to(target_point).position
 

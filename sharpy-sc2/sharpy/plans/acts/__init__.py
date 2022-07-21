@@ -19,3 +19,4 @@ from .reserve import Reserve
 from .tech import Tech
 from .workers import Workers
 from .auto_worker import AutoWorker
+from .proxy_build import ProxyBuild

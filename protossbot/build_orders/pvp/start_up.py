@@ -9,6 +9,7 @@ from sharpy.managers import ManagerBase
 
 from sharpy.managers.extensions import DataManager, BuildDetector
 from sharpy.plans.protoss import *
+from sharpy.plans.acts import DefensePosition
 
 
 def pvp_start_up() -> BuildOrder:
@@ -28,7 +29,8 @@ def pvp_start_up() -> BuildOrder:
             GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=2, priority=True),
             GridBuilding(unit_type=UnitTypeId.CYBERNETICSCORE, to_count=1, priority=True),
             Workers(20),
-            GridBuilding(unit_type=UnitTypeId.PYLON, to_count=2, priority=True),
+            PositionBuilding(unit_type=UnitTypeId.PYLON, to_count=2,
+                             position_type=DefensePosition.BehindMineralLineRight),
             Workers(23),
             Tech(UpgradeId.WARPGATERESEARCH),
             ProtossUnit(UnitTypeId.STALKER, 1, only_once=True, priority=True),

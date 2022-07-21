@@ -9,18 +9,21 @@ from sharpy.managers import ManagerBase
 
 from sharpy.managers.extensions import DataManager, BuildDetector
 from sharpy.plans.protoss import *
+from sc2.position import Point2
+from sharpy.knowledges.knowledge import Knowledge
 
 
 def counterNexusFirst() -> BuildOrder:
     return BuildOrder(
         ChronoAnyTech(save_to_energy=0),
-
         SequentialList(
             GridBuilding(unit_type=UnitTypeId.CYBERNETICSCORE, to_count=1, priority=True),
+            ProxyBuild(UnitTypeId.PYLON),
             ProtossUnit(UnitTypeId.STALKER, 2, only_once=True, priority=True),
             Tech(UpgradeId.WARPGATERESEARCH),
+            ProxyBuild(UnitTypeId.GATEWAY),
             ProtossUnit(UnitTypeId.STALKER, 4, only_once=True, priority=True),
-            Step(UnitExists(UnitTypeId.CYBERNETICSCORE),
+            Step(UnitExists(UnitTypeId.GATEWAY, count=3),
                  GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=4, priority=True)),
         ),
 
@@ -45,3 +48,4 @@ def common_strategy() -> SequentialList:
         PlanZoneAttack(start_attack_power=2),
         PlanFinishEnemy(),
     )
+

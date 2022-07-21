@@ -203,7 +203,6 @@ class ActBase(Component, ABC):
         if worker is None:
             workers = self.ai.workers.filter(
                 lambda w: not w.has_buff(BuffId.ORACLESTASISTRAPTARGET) and not w.is_constructing_scv
-                          and w.distance_to(position) < 40
             ).sorted_by_distance_to(position)
             if not workers:
                 return None
@@ -213,6 +212,8 @@ class ActBase(Component, ABC):
                 # if self.knowledge.my_race == Race.Protoss and role == UnitTask.Building:
                 #     return 0
 
+                if unit.distance_to(position) > 40:
+                    return unit.distance_to(position)
                 if role == UnitTask.Idle:
                     return 1
 
