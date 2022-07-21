@@ -13,13 +13,19 @@ from sharpy.plans.protoss import *
 
 def counterNexusFirst() -> BuildOrder:
     return BuildOrder(
-        GridBuilding(unit_type=UnitTypeId.CYBERNETICSCORE, to_count=1, priority=True),
-        ChronoAnyTech(save_to_energy=50),
-        Tech(UpgradeId.WARPGATERESEARCH),
-        ProtossUnit(UnitTypeId.STALKER, to_count=40, priority=True),
+        ChronoAnyTech(save_to_energy=0),
 
-        Step(UnitExists(UnitTypeId.CYBERNETICSCORE),
-             GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=4, priority=True)),
+        SequentialList(
+            GridBuilding(unit_type=UnitTypeId.CYBERNETICSCORE, to_count=1, priority=True),
+            ProtossUnit(UnitTypeId.STALKER, 2, only_once=True, priority=True),
+            Tech(UpgradeId.WARPGATERESEARCH),
+            ProtossUnit(UnitTypeId.STALKER, 4, only_once=True, priority=True),
+            Step(UnitExists(UnitTypeId.CYBERNETICSCORE),
+                 GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=4, priority=True)),
+        ),
+
+        Step(UnitExists(UnitTypeId.GATEWAY, count=4),
+             ProtossUnit(UnitTypeId.STALKER, priority=True)),
         AutoWorker(),
         AutoPylon(),
         common_strategy(),
