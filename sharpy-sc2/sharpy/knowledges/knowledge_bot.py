@@ -52,6 +52,7 @@ class KnowledgeBot(SkeletonBot, ABC):
             self.unit_cache,
             self.unit_value,
             self.roles,
+            self.build_detector,
             self.pathing_manager,
             self.zone_manager,
             self.building_solver,

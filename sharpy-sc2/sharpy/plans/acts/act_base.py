@@ -142,7 +142,7 @@ class ActBase(Component, ABC):
         return self.get_count(unit_type, include_pending=True) - self.get_count(unit_type, include_pending=False)
 
     def get_count(
-        self, unit_type: UnitTypeId, include_pending=True, include_killed=False, include_not_ready: bool = True
+            self, unit_type: UnitTypeId, include_pending=True, include_killed=False, include_not_ready: bool = True
     ) -> int:
         """Calculates how many buildings there are already, including pending structures."""
         count = 0
@@ -203,6 +203,7 @@ class ActBase(Component, ABC):
         if worker is None:
             workers = self.ai.workers.filter(
                 lambda w: not w.has_buff(BuffId.ORACLESTASISTRAPTARGET) and not w.is_constructing_scv
+                          and w.distance_to(position) < 40
             ).sorted_by_distance_to(position)
             if not workers:
                 return None
@@ -223,7 +224,7 @@ class ActBase(Component, ABC):
                         else:
                             return 4
                     if unit.is_carrying_vespene:
-                        return 5
+                        return 2
                     if unit.is_carrying_minerals:
                         return 3
                     return 3
@@ -239,13 +240,13 @@ class ActBase(Component, ABC):
         return worker
 
     async def build(
-        self,
-        type_id: UnitTypeId,
-        near: Point2,
-        max_distance: int = 20,
-        build_worker: Optional[Unit] = None,
-        random_alternative: bool = True,
-        placement_step: int = 2,
+            self,
+            type_id: UnitTypeId,
+            near: Point2,
+            max_distance: int = 20,
+            build_worker: Optional[Unit] = None,
+            random_alternative: bool = True,
+            placement_step: int = 2,
     ) -> bool:
         if build_worker is None:
             build_worker = self.get_worker_builder(near, 0)
