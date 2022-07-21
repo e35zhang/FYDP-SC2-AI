@@ -6,7 +6,7 @@ Starter bot using  [sharpy-sc2](https://github.com/DrInfy/sharpy-sc2/wiki) and [
 
 `python run_custom.py -m EverDreamLE -p1 protossbot -p2 protossbot`
 
-`py run_custom.py -p1 human.protoss -p2 protossbot --map EverDreamLE `
+`python run_custom.py -p1 human.protoss -p2 protossbot --map EverDreamLE `
 
 Replays and logs will be in `games` folder.
 

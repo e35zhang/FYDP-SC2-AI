@@ -226,6 +226,10 @@ class BuildDetector(ManagerBase):
                         and len(self.cache.enemy(UnitTypeId.ASSIMILATOR)) == 1:
                     self._set_rush(EnemyRushBuild.SingleGate)
                     return
+                if len(self.cache.enemy(UnitTypeId.PYLON)) == 1 \
+                        and len(self.cache.enemy(UnitTypeId.ASSIMILATOR)) < 2:
+                    self._set_rush(EnemyRushBuild.NexusFirst)
+                    return
 
         # 2 pylon timming
         if 60 + 45 < self.ai.time < 60 + 50:
