@@ -1,15 +1,12 @@
-# sharpy-starter-bot
+# sharpy-starter-bot Links
 Starter bot using  [sharpy-sc2](https://github.com/DrInfy/sharpy-sc2/wiki) and [python-sc2](https://github.com/BurnySc2/python-sc2) for playing [Starcraft 2](https://starcraft2.com/en-us/) using [sc2 api](https://github.com/Blizzard/s2client-api).
-
-## To download
-`git clone --recursive https://github.com/DrInfy/sharpy-starter-bot`
 
 ## To run the bot vs ingame ai
 `python run_custom.py -m EverDreamLE -p1 protossbot -p2 ai`
 
-`python run_custom.py -m SubmarineLE -p1 zergbot -p2 ai`
+`python run_custom.py -m EverDreamLE -p1 protossbot -p2 protossbot`
 
-`python run_custom.py -m GoldenWallLE -p1 terranbot -p2 ai`
+`py run_custom.py -p1 human.protoss -p2 protossbot --map EverDreamLE `
 
 Replays and logs will be in `games` folder.
 
