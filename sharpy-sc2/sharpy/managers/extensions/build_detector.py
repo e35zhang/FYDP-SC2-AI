@@ -227,15 +227,23 @@ class BuildDetector(ManagerBase):
                     self._set_rush(EnemyRushBuild.SingleGate)
                     return
                 if len(self.cache.enemy(UnitTypeId.PYLON)) == 1 \
-                        and len(self.cache.enemy(UnitTypeId.ASSIMILATOR)) < 2:
+                        and len(self.cache.enemy(UnitTypeId.GATEWAY)) < 2 and \
+                        len(self.cache.enemy(UnitTypeId.ASSIMILATOR)) < 2:
                     self._set_rush(EnemyRushBuild.NexusFirst)
+                    return
+
+        if 60 + 30 < self.ai.time < 60 + 35:
+            if self.rush_build == EnemyRushBuild.NexusFirst:
+                if len(self.cache.enemy(UnitTypeId.NEXUS)) < 2:
+                    self._set_rush(EnemyRushBuild.ProxyZealots)
                     return
 
         # 2 pylon timming
         if 60 + 45 < self.ai.time < 60 + 50:
             if self.rush_build == EnemyRushBuild.Start:
                 if len(self.cache.enemy(UnitTypeId.PYLON)) < 2 and \
-                        len(self.cache.enemy(UnitTypeId.NEXUS)) < 2:
+                        len(self.cache.enemy(UnitTypeId.NEXUS)) < 2 and \
+                        len(self.cache.enemy(UnitTypeId.ASSIMILATOR)) == 2:
                     self._set_rush(EnemyRushBuild.PotentialProxy)
                     return
 

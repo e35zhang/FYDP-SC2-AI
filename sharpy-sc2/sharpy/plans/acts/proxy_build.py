@@ -16,11 +16,15 @@ class ProxyBuild(ActBase):
         self.unit_type = unit_type
         self.only_once = only_once
         self.builder_tag: Optional[int] = None
+        self.finished = False
 
     async def start(self, knowledge: "Knowledge"):
         await super().start(knowledge)
 
     async def execute(self) -> bool:
+
+        if self.finished:
+            return True
 
         if self.position is None:
             self.position = self.knowledge.get_required_manager(IZoneManager). \
@@ -30,6 +34,7 @@ class ProxyBuild(ActBase):
             if building.distance_to(self.position) < 20:
                 if self.only_once:
                     self.position = None
+                    self.finished = True
                 return True
 
         position = self.position

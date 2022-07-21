@@ -70,6 +70,9 @@ class GenericMicro(MicroStep):
             else:
                 if self.attack_range < self.enemy_attack_range - 0.5:
                     self.model = CombatModel.RoachToStalker
+                elif self.knowledge.enemy_race == Race.Protoss \
+                        and self.move_type == MoveType.Assault:
+                    self.model = CombatModel.RoachToStalker
                 elif self.attack_range > self.enemy_attack_range + 0.5:
                     self.model = CombatModel.StalkerToRoach
 

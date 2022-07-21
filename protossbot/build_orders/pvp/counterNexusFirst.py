@@ -26,7 +26,6 @@ def counterNexusFirst() -> BuildOrder:
             Step(UnitExists(UnitTypeId.GATEWAY, count=3),
                  GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=4, priority=True)),
         ),
-
         Step(UnitExists(UnitTypeId.GATEWAY, count=4),
              ProtossUnit(UnitTypeId.STALKER, priority=True)),
         AutoWorker(),

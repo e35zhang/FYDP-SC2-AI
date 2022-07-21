@@ -58,8 +58,8 @@ class PlanZoneDefense(ActBase):
                 if not self.defense_required(enemies):
                     # Delay before removing defenses in case we just lost visibility of the enemies
                     if (
-                        zone.last_scouted_center == self.knowledge.ai.time
-                        or self.zone_seen_enemy[i] + PlanZoneDefense.ZONE_CLEAR_TIMEOUT < self.ai.time
+                            zone.last_scouted_center == self.knowledge.ai.time
+                            or self.zone_seen_enemy[i] + PlanZoneDefense.ZONE_CLEAR_TIMEOUT < self.ai.time
                     ):
                         self.roles.clear_tasks(zone_defenders_all)
                         zone_defenders.clear()
@@ -105,8 +105,16 @@ class PlanZoneDefense(ActBase):
                         self.combat.add_unit(unit)
                         zone_tags.append(unit.tag)
 
-                if len(enemies) > 1 or (len(enemies) == 1 and enemies[0].type_id not in UnitValue.worker_types):
+                defend_worker_harass = len(zone.our_workers.filter(lambda x: x.shield_percentage < 1)) > 0 \
+                                       and self.ai.time < 2 * 60 + 30
+                if len(enemies) > 1 or (len(enemies) == 1 and enemies[0].type_id in UnitValue.worker_types and \
+                                        defend_worker_harass):
                     # Pull workers to defend only and only if the enemy isn't one worker scout
+                    if (len(enemies) == 1 and enemies[0].type_id in UnitValue.worker_types and \
+                            defend_worker_harass):
+                        defense_required.multiply(0.5)
+                    if defend_worker_harass and len(zone.our_workers.filter(lambda x: x.shield_percentage < 0.3)) > 0:
+                        defense_required.multiply(1.5)
                     if defenders.is_enough_for(defense_required):
                         # Workers should return to mining.
                         for unit in zone_worker_defenders:
@@ -126,7 +134,7 @@ class PlanZoneDefense(ActBase):
         return True  # never block
 
     async def worker_defence(
-        self, defenders: float, defense_required, enemy_center, zone: "Zone", zone_tags, zone_worker_defenders
+            self, defenders: float, defense_required, enemy_center, zone: "Zone", zone_tags, zone_worker_defenders
     ):
         ground_enemies: Units = zone.known_enemy_units.not_flying
 
