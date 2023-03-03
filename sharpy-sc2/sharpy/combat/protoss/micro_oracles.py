@@ -31,7 +31,7 @@ class MicroOracles(MicroStep):
                 elif close_to_target:
                     targets = close_to_target
         else:
-            targets = self.cache.enemy_in_range(unit.position, 10).filter(lambda u: u.is_light and not u.is_flying)
+            targets = self.cache.enemy_in_range(unit.position, 10).filter(lambda u: not u.is_flying)
 
         if targets:
             closest = targets.closest_to(unit)

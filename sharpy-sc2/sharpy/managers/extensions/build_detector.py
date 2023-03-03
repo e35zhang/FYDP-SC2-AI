@@ -323,10 +323,19 @@ class BuildDetector(ManagerBase):
                 return self._set_rush(EnemyRushBuild.OneBaseRax)
 
     def _zerg_rushes(self):
+        # Pool12 = 200
+        # Pool17 = 201
+        # RoachRush = 202
+        # LingBaneRush = 203
+
+        # PVZMidGameMacro = 220
+
+        # PVZLateGameMacro = 230
+
         hatcheries: Units = self.cache.enemy(UnitTypeId.HATCHERY)
         if len(hatcheries) > 2 or self.enemy_units_manager.enemy_worker_count > 20:
             # enemy has expanded TWICE or has large amount of workers, that's no rush
-            return self._set_rush(EnemyRushBuild.Start)
+            return self._set_rush(EnemyRushBuild.PVZMidGameMacro)
 
         if self.building_started_before(UnitTypeId.ROACHWARREN, 130) or (
                 self.ai.time < 160 and self.cache.enemy(UnitTypeId.ROACH)
@@ -341,7 +350,7 @@ class BuildDetector(ManagerBase):
 
         if self.building_started_before(UnitTypeId.SPAWNINGPOOL, 40):
             # Very early pool detected
-            return self._set_rush(EnemyRushBuild.PoolFirst)
+            return self._set_rush(EnemyRushBuild.Pool17)
 
         if (
                 self.ai.time > 120
@@ -349,7 +358,7 @@ class BuildDetector(ManagerBase):
                 and self.ai.enemy_structures(UnitTypeId.HATCHERY).amount == 1
                 and self.building_started_before(UnitTypeId.SPAWNINGPOOL, 70)
         ):
-            return self._set_rush(EnemyRushBuild.OneHatcheryAllIn)
+            return self._set_rush(EnemyRushBuild.Pool17)
 
         # 12 pool zerglings are at 1min 22sec or 82 sec
         # 13 pool zerglings are at 1m 27sec or 87 sec
@@ -366,7 +375,7 @@ class BuildDetector(ManagerBase):
                 and self.enemy_units_manager.enemy_worker_count < 17
                 # and self.cache.enemy(UnitTypeId.LARVA).amount >= 3
         ):
-            return self._set_rush(EnemyRushBuild.HatchPool15_14)
+            return self._set_rush(EnemyRushBuild.Pool17)
 
 
     def building_started_before(self, type_id: UnitTypeId, start_time_ceiling: int) -> bool:

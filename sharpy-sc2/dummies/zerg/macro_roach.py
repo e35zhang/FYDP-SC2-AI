@@ -97,7 +97,7 @@ class MacroRoach(KnowledgeBot):
             SpreadCreep(),
             InjectLarva(),
             DistributeWorkers(),
-            Step(None, SpeedMining(), lambda ai: ai.client.game_step > 5),
+            # Step(None, SpeedMining(), lambda ai: ai.client.game_step > 5),
             PlanZoneDefense(),
             PlanZoneGather(),
             attack,

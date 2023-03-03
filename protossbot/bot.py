@@ -16,6 +16,9 @@ from .build_orders.pvp.counterCannonRush import counterCannonRush
 from .build_orders.pvp.counterNexusFirst import counterNexusFirst
 
 
+from .build_orders.pvz.start_up import pvz_start_up
+
+
 class ProtossBot(KnowledgeBot):
     data_manager: DataManager
 
@@ -77,7 +80,16 @@ class ProtossBot(KnowledgeBot):
         return self.pvp_build()
 
     def pvz_build(self) -> BuildOrder:
-        return self.pvp_build()
+        return BuildOrder(
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.Start, pvz_start_up()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.WorkerRush, counterNexusFirst()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.Pool12, pvz_start_up()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.Pool17, pvz_start_up()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.RoachRush, pvz_start_up()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.LingBaneRush, pvz_start_up()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PVZMidGameMacro, pvz_start_up()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PVZLateGameMacro, pvz_start_up()),
+        )
 
     def pvr_build(self) -> BuildOrder:
         return self.pvp_build()
