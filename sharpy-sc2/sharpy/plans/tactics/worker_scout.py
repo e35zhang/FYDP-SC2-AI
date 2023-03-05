@@ -57,7 +57,7 @@ class WorkerScout(ActBase):
         if not workers.exists:
             return
 
-        if self.scout_tag is None:
+        if self.scout_tag is None and self.current_target is not None:
             closest_worker = workers.closest_to(self.current_target)
             self.scout_tag = closest_worker.tag
             self.roles.set_task(UnitTask.Scouting, closest_worker)

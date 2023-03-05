@@ -44,7 +44,7 @@ def pvz_start_up() -> BuildOrder:
                     Expand(3),
                     Step(UnitExists(UnitTypeId.NEXUS), action=ChronoUnit(UnitTypeId.PROBE, UnitTypeId.NEXUS, 4)),
                     ProtossUnit(UnitTypeId.ORACLE, 2, only_once=True, priority=True),
-                    ProtossUnit(UnitTypeId.ADEPT, 3, only_once=True, priority=True),
+                    ProtossUnit(UnitTypeId.ADEPT, 3, priority=True),
                     BuildGas(3),
                     GridBuilding(unit_type=UnitTypeId.TWILIGHTCOUNCIL, to_count=1, priority=True),
                     GridBuilding(unit_type=UnitTypeId.FORGE, to_count=1, priority=True),
@@ -58,7 +58,15 @@ def pvz_start_up() -> BuildOrder:
                     BuildGas(3),
                     GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=8, priority=True),
                     BuildGas(4),
-                    ProtossUnit(UnitTypeId.STALKER, 60, priority=True),
+                    BuildOrder(
+                        Step(Minerals(800), Expand(4)),
+                        Tech(UpgradeId.CHARGE),
+                        ProtossUnit(UnitTypeId.STALKER, 24, priority=True),
+                        GridBuilding(unit_type=UnitTypeId.ROBOTICSFACILITY, to_count=1),
+                        ProtossUnit(UnitTypeId.WARPPRISM, 1, priority=True),
+                        Step(TechReady(UpgradeId.CHARGE), ProtossUnit(UnitTypeId.ZEALOT, 8, priority=True)),
+                        ProtossUnit(UnitTypeId.IMMORTAL, priority=True),
+                    )
                 )
             )
         ),
