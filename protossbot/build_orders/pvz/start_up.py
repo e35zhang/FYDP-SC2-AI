@@ -69,6 +69,7 @@ def pvz_start_up() -> BuildOrder:
 def common_strategy() -> SequentialList:
     return SequentialList(
         DoubleAdeptScout(),
+        OracleHarass(),
         DistributeWorkers(),
         PlanHallucination(),
         HallucinatedPhoenixScout(),

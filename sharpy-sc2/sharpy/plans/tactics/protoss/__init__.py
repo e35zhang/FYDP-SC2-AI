@@ -6,3 +6,4 @@ from .plan_heat_defender import PlanHeatDefender
 from .plan_heat_observer import PlanHeatObserver
 from .dt_attack import DarkTemplarAttack
 from .protoss_rally_point import ProtossRallyPoint
+from .oracle_harass import OracleHarass
