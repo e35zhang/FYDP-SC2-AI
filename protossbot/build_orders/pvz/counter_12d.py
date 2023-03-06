@@ -14,7 +14,7 @@ from sharpy.plans.protoss import *
 from .after_early_pool import pvz_after_early_pool
 
 
-def pvz_counter_12d() -> BuildOrder:
+def counter12Pool() -> BuildOrder:
     return BuildOrder(
         SequentialList(
             GridBuilding(unit_type=UnitTypeId.CYBERNETICSCORE, to_count=1, priority=True),

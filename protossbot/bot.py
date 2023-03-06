@@ -20,7 +20,9 @@ from .build_orders.pvp.counterProxyFourGates import counterProxyFourGates
 from .build_orders.pvp.counterSingleGate import counterSingleGate
 
 from .build_orders.pvz.start_up import pvz_start_up
-from .build_orders.pvz.counter_12d import pvz_counter_12d
+from .build_orders.pvz.counter_12d import counter12Pool
+from .build_orders.pvz.counter_ling_rush import counterLingRush
+from .build_orders.pvz.counterRoachRush import counterRoachRush
 
 
 class ProtossBot(KnowledgeBot):
@@ -84,11 +86,11 @@ class ProtossBot(KnowledgeBot):
     def pvz_build(self) -> BuildOrder:
         return BuildOrder(
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.Start, pvz_start_up()),
-            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.WorkerRush, pvz_counter_12d()),
-            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.Pool12, pvz_counter_12d()),
-            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.Pool17, pvz_counter_12d()),
-            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.RoachRush, pvz_start_up()),
-            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.LingBaneRush, pvz_counter_12d()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.WorkerRush, counter12Pool()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.Pool12, counter12Pool()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.Pool17, counterLingRush()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.RoachRush, counterRoachRush()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.LingBaneRush, counterLingRush()),
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PVZMidGameMacro, pvz_start_up()),
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PVZLateGameMacro, pvz_start_up()),
         )
