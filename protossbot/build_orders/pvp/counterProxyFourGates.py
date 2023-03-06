@@ -11,34 +11,43 @@ from sharpy.managers.extensions import DataManager, BuildDetector
 from sharpy.plans.protoss import *
 
 
-def pvp_start_up() -> BuildOrder:
+def counterProxyFourGates() -> BuildOrder:
     return BuildOrder(
-        SequentialList(
-            Workers(14),
-            GridBuilding(unit_type=UnitTypeId.PYLON, to_count=1, priority=True),
-            Step(UnitExists(UnitTypeId.PYLON), action=WorkerScout()),
-            Workers(15),
-            GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=1, priority=True),
-            Step(UnitExists(UnitTypeId.NEXUS), action=ChronoUnit(UnitTypeId.PROBE, UnitTypeId.NEXUS, 1)),
-            Workers(17),
-            BuildGas(1),
-            Workers(18),
-            BuildGas(2),
-            Workers(19),
-            GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=2, priority=True),
-            GridBuilding(unit_type=UnitTypeId.CYBERNETICSCORE, to_count=1, priority=True),
-            Workers(20),
-            GridBuilding(unit_type=UnitTypeId.PYLON, to_count=2, priority=True),
-            Workers(23),
-            Tech(UpgradeId.WARPGATERESEARCH),
-            ProtossUnit(UnitTypeId.STALKER, 1, only_once=True, priority=True),
-            ProtossUnit(UnitTypeId.SENTRY, 1, only_once=True, priority=True),
-            ProtossUnit(UnitTypeId.STALKER, 3, only_once=True, priority=True),
-            Expand(2),
-            ProtossUnit(UnitTypeId.STALKER, priority=True),
-            AutoPylon(),
-            AutoWorker(),
-        ),
+        AutoWorker(),
+        AutoPylon(),
+
+        ChronoUnit(UnitTypeId.IMMORTAL, UnitTypeId.ROBOTICSFACILITY, 10),
+
+        GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=2, priority=True),
+        GridBuilding(unit_type=UnitTypeId.CYBERNETICSCORE, to_count=1, priority=True),
+        BuildGas(2),
+        ProtossUnit(UnitTypeId.STALKER, to_count=2, priority=True, only_once=True),
+
+        Tech(UpgradeId.WARPGATERESEARCH),
+        Expand(2, priority=True),
+        DefensiveCannons(0, 1, 1),
+
+        Step(EnemyUnitExists(UnitTypeId.STALKER, 6),
+             ProtossUnit(UnitTypeId.SENTRY, priority=True, to_count=1)),
+
+        Step(EnemyUnitExists(UnitTypeId.VOIDRAY),
+             ProtossUnit(UnitTypeId.STALKER, priority=True, to_count=8)),
+        Step(EnemyUnitExists(UnitTypeId.ADEPT, 4),
+             ProtossUnit(UnitTypeId.STALKER, priority=True, to_count=6)),
+        Step(EnemyUnitExists(UnitTypeId.STALKER, 4),
+             ProtossUnit(UnitTypeId.IMMORTAL, priority=True, to_count=4)),
+        Step(EnemyUnitExists(UnitTypeId.STALKER, 8),
+             ProtossUnit(UnitTypeId.IMMORTAL, priority=True, to_count=8)),
+
+        Step(Supply(60),
+             BuildGas(3)),
+        GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=4, priority=True),
+        Step(UnitExists(UnitTypeId.GATEWAY, 6),
+             GridBuilding(unit_type=UnitTypeId.ROBOTICSFACILITY, to_count=1, priority=True)),
+        Step(Supply(64),
+             GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=6, priority=True)),
+        ProtossUnit(UnitTypeId.WARPPRISM, priority=True, to_count=1),
+        ProtossUnit(UnitTypeId.STALKER, priority=True),
         common_strategy()
 
     )

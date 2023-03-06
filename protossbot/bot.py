@@ -14,6 +14,10 @@ from sharpy.plans.protoss import *
 from .build_orders.pvp.start_up import pvp_start_up
 from .build_orders.pvp.counterCannonRush import counterCannonRush
 from .build_orders.pvp.counterNexusFirst import counterNexusFirst
+from .build_orders.pvp.counterProxyZealots import counterProxyZealots
+from .build_orders.pvp.counterProxyRobo import counterProxyRobo
+from .build_orders.pvp.counterProxyFourGates import counterProxyFourGates
+from .build_orders.pvp.counterSingleGate import counterSingleGate
 
 from .build_orders.pvz.start_up import pvz_start_up
 from .build_orders.pvz.counter_12d import pvz_counter_12d
@@ -56,16 +60,16 @@ class ProtossBot(KnowledgeBot):
     def pvp_build(self) -> BuildOrder:
         return BuildOrder(
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.Start, pvp_start_up()),
-            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.WorkerRush, counterNexusFirst()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.WorkerRush, counterProxyZealots()),
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.CannonRush, counterCannonRush()),
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.NexusFirst, counterNexusFirst()),
-            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.SingleGate, counterNexusFirst()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.SingleGate, counterSingleGate()),
 
-            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.ProxyZealots, counterNexusFirst()),
-            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.ProxyRobo, counterNexusFirst()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.ProxyZealots, counterProxyZealots()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.ProxyRobo, counterProxyRobo()),
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.ProxyVoid, counterNexusFirst()),
-            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.ProxyFourGate, counterNexusFirst()),
-            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PotentialProxy, counterNexusFirst()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.ProxyFourGate, counterProxyFourGates()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PotentialProxy, counterProxyFourGates()),
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.RoboExpand, counterNexusFirst()),
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.StargateExpand, counterNexusFirst()),
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.TwilightExpand, counterNexusFirst()),
