@@ -74,17 +74,19 @@ def pvz_start_up() -> BuildOrder:
     )
 
 
-def common_strategy() -> SequentialList:
-    return SequentialList(
-        OracleHarass(),
-        DistributeWorkers(),
-        PlanHallucination(),
-        HallucinatedPhoenixScout(),
-        PlanCancelBuilding(),
-        WorkerRallyPoint(),
-        PlanZoneGather(),
-        PlanZoneDefense(),
-        Step(TechReady(UpgradeId.BLINKTECH, 0.9), DoubleAdeptScout(2)),
-        Step(TechReady(UpgradeId.BLINKTECH, 0.9), action=PlanZoneAttack()),
-        PlanFinishEnemy(),
+def common_strategy() -> BuildOrder:
+    return BuildOrder(
+        Step(UnitExists(UnitTypeId.ORACLE, 2, include_not_ready=False), OracleHarass()),
+        Step(UnitExists(UnitTypeId.ORACLE, 2, include_not_ready=False), DoubleAdeptScout(2)),
+        SequentialList(
+            DistributeWorkers(),
+            PlanHallucination(),
+            HallucinatedPhoenixScout(),
+            PlanCancelBuilding(),
+            WorkerRallyPoint(),
+            PlanZoneGather(),
+            PlanZoneDefense(),
+            Step(TechReady(UpgradeId.BLINKTECH, 0.9), action=PlanZoneAttack()),
+            PlanFinishEnemy(),
+        )
     )

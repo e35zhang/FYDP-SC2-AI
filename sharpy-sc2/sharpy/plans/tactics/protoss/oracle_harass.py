@@ -15,11 +15,17 @@ class OracleHarass(ActBase):
         self.harass_started = False
         self.already_begin_attack = []
         self.reached_position = []
+        self.ended = False
 
     async def start(self, knowledge: Knowledge):
         await super().start(knowledge)
 
     async def execute(self) -> bool:
+        if self.ended:
+            return True
+        if self.ai.time > 7*60:
+            self.ended = True
+            return True
         oracles = self.knowledge.unit_cache.own(UnitTypeId.ORACLE).ready
         position = self.get_group_oracle_flank_position()
         retreat_point = self.get_retreat_point()

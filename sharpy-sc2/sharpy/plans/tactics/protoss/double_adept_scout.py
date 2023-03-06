@@ -59,7 +59,7 @@ class DoubleAdeptScout(ActBase):
                 adept: Unit = self.cache.by_tag(tag)
                 if adept is not None:
                     adepts.append(adept)
-                    self.knowledge.roles.set_task(UnitTask.Reserved, adept)
+                    self.knowledge.roles.set_task(UnitTask.Scouting, adept)
             self.roles.refresh_tasks(adepts)
             enemy_attackers = self.knowledge.unit_cache.enemy(
                 [UnitTypeId.QUEEN, UnitTypeId.ZERGLING, UnitTypeId.MARINE, UnitTypeId.SIEGETANKSIEGED]
@@ -230,7 +230,8 @@ class DoubleAdeptScout(ActBase):
             self.started = True
 
             for adept in adepts:
-                self.scout_tags.append(adept.tag)
-                self.knowledge.roles.set_tasks(UnitTask.Reserved, adepts)
+                if not self.knowledge.roles.is_in_role(UnitTask.Reserved, adept):
+                    self.scout_tags.append(adept.tag)
+                    self.knowledge.roles.set_tasks(UnitTask.Scouting, adepts)
             if len(self.scout_tags) >= self.adepts_to_start:
                 return
