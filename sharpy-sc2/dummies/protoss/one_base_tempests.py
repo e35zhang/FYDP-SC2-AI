@@ -45,7 +45,7 @@ class OneBaseTempests(KnowledgeBot):
                     PlanZoneDefense(),
                     RestorePower(),
                     DistributeWorkers(),
-                    Step(None, SpeedMining(), lambda ai: ai.client.game_step > 5),
+                    #Step(None, SpeedMining(), lambda ai: ai.client.game_step > 5),
                     PlanZoneGather(),
                     Step(UnitExists(UnitTypeId.TEMPEST, 1, include_killed=True), attack),
                     PlanFinishEnemy(),

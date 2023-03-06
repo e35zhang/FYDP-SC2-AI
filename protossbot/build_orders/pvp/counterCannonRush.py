@@ -36,7 +36,6 @@ def counterCannonRush() -> BuildOrder:
 
 def common_strategy() -> SequentialList:
     return SequentialList(
-        SpeedMining(),
         DistributeWorkers(),
         PlanHallucination(),
         HallucinatedPhoenixScout(),

@@ -260,7 +260,7 @@ class CannonRush(KnowledgeBot):
                 PlanCancelBuilding(),
                 PlanZoneDefense(),
                 DistributeWorkers(),
-                Step(None, SpeedMining(), lambda ai: ai.client.game_step > 5),
+                #Step(None, SpeedMining(), lambda ai: ai.client.game_step > 5),
                 PlanZoneGather(),
                 PlanZoneAttack(6),
                 PlanFinishEnemy(),

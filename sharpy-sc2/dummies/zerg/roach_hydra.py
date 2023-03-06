@@ -105,7 +105,7 @@ class RoachHydra(KnowledgeBot):
                 SpreadCreep(),
                 InjectLarva(),
                 self.distribute,
-                Step(None, SpeedMining(), lambda ai: ai.client.game_step > 5),
+                #Step(None, SpeedMining(), lambda ai: ai.client.game_step > 5),
                 PlanZoneAttack(),
                 PlanFinishEnemy(),
             ),

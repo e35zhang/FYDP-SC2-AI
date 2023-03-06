@@ -86,7 +86,7 @@ class Stalkers4Gate(SkeletonBot):
                 PlanZoneDefense(),
                 RestorePower(),
                 DistributeWorkers(),
-                Step(None, SpeedMining(), lambda ai: ai.client.game_step > 5),
+                #Step(None, SpeedMining(), lambda ai: ai.client.game_step > 5),
                 PlanZoneGather(),
                 Step(TechReady(UpgradeId.BLINKTECH, 0.9), attack),
                 PlanFinishEnemy(),

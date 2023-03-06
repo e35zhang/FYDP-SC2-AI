@@ -15,8 +15,8 @@ from .build_orders.pvp.start_up import pvp_start_up
 from .build_orders.pvp.counterCannonRush import counterCannonRush
 from .build_orders.pvp.counterNexusFirst import counterNexusFirst
 
-
 from .build_orders.pvz.start_up import pvz_start_up
+from .build_orders.pvz.counter_12d import pvz_counter_12d
 
 
 class ProtossBot(KnowledgeBot):
@@ -72,8 +72,6 @@ class ProtossBot(KnowledgeBot):
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PVPMidGameMacro, counterNexusFirst()),
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PVPLateGameMacro, counterNexusFirst()),
 
-
-
         )
 
     def pvt_build(self) -> BuildOrder:
@@ -82,11 +80,11 @@ class ProtossBot(KnowledgeBot):
     def pvz_build(self) -> BuildOrder:
         return BuildOrder(
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.Start, pvz_start_up()),
-            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.WorkerRush, counterNexusFirst()),
-            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.Pool12, pvz_start_up()),
-            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.Pool17, pvz_start_up()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.WorkerRush, pvz_counter_12d()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.Pool12, pvz_counter_12d()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.Pool17, pvz_counter_12d()),
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.RoachRush, pvz_start_up()),
-            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.LingBaneRush, pvz_start_up()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.LingBaneRush, pvz_counter_12d()),
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PVZMidGameMacro, pvz_start_up()),
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PVZLateGameMacro, pvz_start_up()),
         )

@@ -78,7 +78,7 @@ class PlanZoneDefense(ActBase):
 
                 defense_required = ExtendedPower(self.unit_values)
                 defense_required.add_power(zone.assaulting_enemy_power)
-                defense_required.multiply(1.5)
+                defense_required.multiply(1.4)
 
                 defenders = ExtendedPower(self.unit_values)
 
@@ -107,6 +107,9 @@ class PlanZoneDefense(ActBase):
 
                 defend_worker_harass = len(zone.our_workers.filter(lambda x: x.shield_percentage < 1)) > 0 \
                                        and self.ai.time < 2 * 60 + 30
+
+                defend_worker_rush = len(enemies) > 5 and self.ai.time < 3 * 60 + 30
+
                 if len(enemies) > 1 or (len(enemies) == 1 and enemies[0].type_id in UnitValue.worker_types and \
                                         defend_worker_harass):
                     # Pull workers to defend only and only if the enemy isn't one worker scout
@@ -144,20 +147,20 @@ class PlanZoneDefense(ActBase):
             if self.ai.get_terrain_height(unit.position) == self.ai.get_terrain_height(zone.center_location):
                 hostiles_inside += self.unit_values.defense_value(unit.type_id)
 
-        if self.ai.workers.amount >= self.ai.supply_used - 2:
+        if self.ai.workers.amount >= self.ai.supply_used - 4:
             # Workers only, defend for everything
-            if zone.our_units.filter(lambda u: u.is_structure and u.health_percentage > 0.6):
+            if zone.our_units.filter(lambda u: u.is_structure and u.shield_health_percentage > 0.6):
                 # losing a building, defend for everything
                 if ground_enemies(UnitTypeId.PHOTONCANNON):
                     # Don't overreact if it's a low ground cannon rush
                     # 2 per proba and 4 per cannon is optimal
                     defense_count_panic = defense_required.power * 0.75
                 else:
-                    defense_count_panic = defense_required.power * 1.3
+                    defense_count_panic = defense_required.power * 1.2
 
                 threshold = 8
             else:
-                defense_count_panic = hostiles_inside * 1.3
+                defense_count_panic = hostiles_inside * 1.2
                 threshold = 6  # probably a worker fight?
         else:
             defense_count_panic = hostiles_inside * 1.1
@@ -188,7 +191,7 @@ class PlanZoneDefense(ActBase):
         if defense_required.power < 1 and not killing_probes:
             return  # Probably a single scout, don't pull workers
 
-        if zone.our_wall() and self.ai.time < 200:
+        if zone.our_wall() and self.ai.time < 300:
             possible_defender_workers = self.ai.workers
         else:
             possible_defender_workers = zone.our_workers
