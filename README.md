@@ -1,6 +1,17 @@
 ## General Information
 Artificial Intelligence using [sharpy-sc2](https://github.com/DrInfy/sharpy-sc2/wiki) and [python-sc2](https://github.com/BurnySc2/python-sc2) for playing [Starcraft 2](https://starcraft2.com/en-us/) using [sc2 api](https://github.com/Blizzard/s2client-api).
 
+## Environment Setup
+Clone this repo https://github.com/e35zhang/FYDP-SC2-AI.git
+
+Install StarCraftII https://starcraft2.com/en-us/
+
+install python 3.7.8
+
+Run `pip install -r requirements.txt`
+
+Copy the Maps folder in this project to the root folder of StarcraftII
+
 ## To run the bot vs ingame ai
 `python run_custom.py -m EverDreamLE -p1 protossbot -p2 ai`
 
