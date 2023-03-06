@@ -40,8 +40,6 @@ def counter12Pool() -> BuildOrder:
 
 def common_strategy() -> SequentialList:
     return SequentialList(
-
-        OracleHarass(),
         DistributeWorkers(),
         PlanHallucination(),
         HallucinatedPhoenixScout(),
@@ -49,7 +47,7 @@ def common_strategy() -> SequentialList:
         WorkerRallyPoint(),
         PlanZoneGather(),
         PlanZoneDefense(),
-        Step(UnitExists(UnitTypeId.ZEALOT), action=DoubleAdeptScout()),
+        DoubleAdeptScout(2),
         Step(UnitExists(UnitTypeId.WARPPRISM), action=PlanZoneAttack()),
         PlanFinishEnemy(),
     )
