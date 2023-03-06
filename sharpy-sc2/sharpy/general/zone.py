@@ -30,7 +30,7 @@ class ZoneResources(enum.Enum):
 
 
 class Zone:
-    ZONE_RADIUS = 17
+    ZONE_RADIUS = 20
     MAIN_ZONE_RADIUS_INCREASE = 5
     ZONE_DANGER_RADIUS = 36
     MAIN_ZONE_RAMP_MAX_RADIUS = 26

@@ -21,6 +21,7 @@ def pvz_after_early_pool() -> BuildOrder:
             Tech(UpgradeId.WARPGATERESEARCH),
             Expand(2),
             GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=2, priority=True),
+            ProtossUnit(UnitTypeId.ZEALOT, 1, priority=True),
             ProtossUnit(UnitTypeId.ADEPT, 2, priority=True),
             GridBuilding(unit_type=UnitTypeId.ROBOTICSFACILITY, to_count=1, priority=True),
             BuildGas(2),

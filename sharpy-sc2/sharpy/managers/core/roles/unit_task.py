@@ -13,3 +13,4 @@ class UnitTask(enum.IntEnum):
     Attacking = 7  # Attacking enemy base
     Reserved = 8  # Reserved for some unknown purpose, i.e. gate keeper
     Hallucination = 9  # Not a real unit. Either a hallucination or changeling
+

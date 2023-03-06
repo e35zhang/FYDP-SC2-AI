@@ -24,6 +24,7 @@ def pvz_counter_12d() -> BuildOrder:
             ProtossUnit(UnitTypeId.ADEPT, 1, priority=True, only_once=True),
             Step(UnitExists(UnitTypeId.GATEWAY, include_not_ready=False),
                  action=ChronoUnit(UnitTypeId.ADEPT, UnitTypeId.GATEWAY, 1)),
+            ProtossUnit(UnitTypeId.ZEALOT, 1, priority=True),
             ProtossUnit(UnitTypeId.ADEPT, 2, priority=True, only_once=True),
             Tech(UpgradeId.WARPGATERESEARCH),
             Expand(to_count=2),
@@ -39,7 +40,7 @@ def pvz_counter_12d() -> BuildOrder:
 
 def common_strategy() -> SequentialList:
     return SequentialList(
-        DoubleAdeptScout(),
+
         OracleHarass(),
         DistributeWorkers(),
         PlanHallucination(),
@@ -48,6 +49,7 @@ def common_strategy() -> SequentialList:
         WorkerRallyPoint(),
         PlanZoneGather(),
         PlanZoneDefense(),
+        Step(UnitExists(UnitTypeId.ZEALOT), action=DoubleAdeptScout()),
         Step(UnitExists(UnitTypeId.WARPPRISM), action=PlanZoneAttack()),
         PlanFinishEnemy(),
     )

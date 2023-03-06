@@ -1,24 +1,23 @@
 from typing import List, Dict, Optional
 
-from sc2.ids.ability_id import AbilityId
 from sharpy.combat.protoss import MicroAdepts
-from sharpy.interfaces import IZoneManager, IEnemyUnitsManager
-from sharpy.managers.extensions import BuildDetector
 from sharpy.plans.acts import ActBase
 from sc2.ids.unit_typeid import UnitTypeId
+from sc2.ids.ability_id import AbilityId
 from sc2.position import Point2
 from sc2.unit import Unit
 from sc2.units import Units
+from sc2.data import Race
 
 from sharpy.general.zone import Zone
 from sharpy.combat import MoveType, MicroRules
 from sharpy.managers.core.roles import UnitTask
+from sharpy.interfaces import IEnemyUnitsManager, IZoneManager
 
 
 class DoubleAdeptScout(ActBase):
     ZONE_DISTANCE_THRESHOLD_SQUARED = 9 * 9
     micro: MicroRules
-    build_detector: BuildDetector
     zone_manager: IZoneManager
     enemy_units_manager: IEnemyUnitsManager
 
@@ -41,23 +40,13 @@ class DoubleAdeptScout(ActBase):
     async def start(self, knowledge: "Knowledge"):
         await super().start(knowledge)
         self.micro = MicroRules()
-        self.micro.load_default_methods()
-        self.micro.generic_micro = MicroAdepts(False)
-        self.build_detector = knowledge.get_manager(BuildDetector)
         self.zone_manager = knowledge.get_required_manager(IZoneManager)
         self.enemy_units_manager = knowledge.get_required_manager(IEnemyUnitsManager)
+        self.micro.load_default_methods()
+        self.micro.generic_micro = MicroAdepts(True)
         await self.micro.start(knowledge)
 
     async def execute(self) -> bool:
-        if self.build_detector and self.build_detector.rush_detected:
-            self.roles.clear_tasks(self.scout_tags)
-            self.scout_tags.clear()
-            return True  # Never block
-
-        if not self.zone_manager.enemy_start_location_found:
-            # We don't know where to go just yet
-            return True  # Never block
-
         if self.ended:
             return True  # Never block
 
@@ -70,7 +59,15 @@ class DoubleAdeptScout(ActBase):
                 adept: Unit = self.cache.by_tag(tag)
                 if adept is not None:
                     adepts.append(adept)
-            if len(adepts) == 0:
+                    self.knowledge.roles.set_task(UnitTask.Reserved, adept)
+            self.roles.refresh_tasks(adepts)
+            enemy_attackers = self.knowledge.unit_cache.enemy(
+                [UnitTypeId.QUEEN, UnitTypeId.ZERGLING, UnitTypeId.MARINE, UnitTypeId.SIEGETANKSIEGED]
+            )
+            static_defense = self.knowledge.unit_cache.enemy(UnitTypeId.PLANETARYFORTRESS).ready
+            if len(adepts) == 0 or (self.knowledge.enemy_race == Race.Zerg and enemy_attackers.amount >= 10) \
+                    or (self.knowledge.enemy_race == Race.Terran and enemy_attackers.amount >= 6)\
+                    or (self.knowledge.enemy_race == Race.Terran and static_defense.amount > 0):
                 await self.end_scout()
             else:
                 await self.micro_adepts(adepts)
@@ -106,15 +103,16 @@ class DoubleAdeptScout(ActBase):
                 if self.cd_manager.is_ready(adept.tag, AbilityId.ADEPTPHASESHIFT_ADEPTPHASESHIFT, 6.9):
                     # Determine whether to cancel the shade or not
                     if self.enemy_units_manager.danger_value(
-                        adept, adept.position
-                    ) < self.enemy_units_manager.danger_value(adept, shade.position):
+                            adept, adept.position
+                    ) < 0.8 * self.enemy_units_manager.danger_value(adept, shade.position):
                         # It's safer to not phase shift
                         adept(AbilityId.CANCEL_ADEPTPHASESHIFT)
                         continue
 
-            if self.cd_manager.is_ready(adept.tag, AbilityId.ADEPTPHASESHIFT_ADEPTPHASESHIFT) and (
-                shade_distance < 11 or shade_distance > 30
-            ):
+            # if self.cd_manager.is_ready(adept.tag, AbilityId.ADEPTPHASESHIFT_ADEPTPHASESHIFT) and (
+            # shade_distance < 11 or shade_distance > 30
+            # ):
+            if self.cd_manager.is_ready(adept.tag, AbilityId.ADEPTPHASESHIFT_ADEPTPHASESHIFT):
                 adept(AbilityId.ADEPTPHASESHIFT_ADEPTPHASESHIFT, self.adept_target)
                 self.cd_manager.used_ability(adept.tag, AbilityId.ADEPTPHASESHIFT_ADEPTPHASESHIFT)
                 self.target_changed = False
@@ -129,7 +127,7 @@ class DoubleAdeptScout(ActBase):
         closest_viable_zone: Zone = None
         second_viable_zone: Zone = None
         current_zone_index: Optional[int] = None
-        enemy_zones: List[Zone] = self.zone_manager.enemy_expansion_zones
+        enemy_zones: List[Zone] = self.knowledge.zone_manager.enemy_expansion_zones
 
         for i in range(0, len(enemy_zones)):
             zone = enemy_zones[i]
@@ -151,8 +149,8 @@ class DoubleAdeptScout(ActBase):
                         # both are enemy zones
                         if current_zone_index == i:
                             if (
-                                zone.could_have_enemy_workers_in < self.ai.time
-                                and closest_viable_zone.could_have_enemy_workers_in < self.ai.time
+                                    zone.could_have_enemy_workers_in < self.ai.time
+                                    and closest_viable_zone.could_have_enemy_workers_in < self.ai.time
                             ):
                                 second_viable_zone = closest_viable_zone
                                 closest_viable_zone = zone
@@ -164,6 +162,12 @@ class DoubleAdeptScout(ActBase):
 
         if closest_viable_zone is None:
             return None
+
+        if self.knowledge.enemy_race == Race.Terran and second_viable_zone:
+            return (
+                await self.get_zone_closest(second_viable_zone, center),
+                await self.get_zone_closest(second_viable_zone, center),
+            )
 
         if second_viable_zone:
             return (
@@ -216,17 +220,17 @@ class DoubleAdeptScout(ActBase):
     async def end_scout(self):
         self.started = False
         self.ended = True
-        self.roles.clear_tasks(self.scout_tags)
+        self.knowledge.roles.clear_tasks(self.scout_tags)
         self.scout_tags.clear()
         self.is_behind_minerals = False
 
     async def check_start(self):
-        adepts: Units = self.roles.free_units()(UnitTypeId.ADEPT)
+        adepts: Units = self.knowledge.unit_cache.own(UnitTypeId.ADEPT)
         if adepts.amount >= self.adepts_to_start:
             self.started = True
 
             for adept in adepts:
                 self.scout_tags.append(adept.tag)
-                self.roles.set_tasks(UnitTask.Scouting, adepts)
-                if len(self.scout_tags) >= self.adepts_to_start:
-                    return
+                self.knowledge.roles.set_tasks(UnitTask.Reserved, adepts)
+            if len(self.scout_tags) >= self.adepts_to_start:
+                return

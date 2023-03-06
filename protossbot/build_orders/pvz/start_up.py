@@ -76,7 +76,6 @@ def pvz_start_up() -> BuildOrder:
 
 def common_strategy() -> SequentialList:
     return SequentialList(
-        DoubleAdeptScout(),
         OracleHarass(),
         DistributeWorkers(),
         PlanHallucination(),
@@ -85,6 +84,7 @@ def common_strategy() -> SequentialList:
         WorkerRallyPoint(),
         PlanZoneGather(),
         PlanZoneDefense(),
+        Step(TechReady(UpgradeId.BLINKTECH, 0.9), DoubleAdeptScout(2)),
         Step(TechReady(UpgradeId.BLINKTECH, 0.9), action=PlanZoneAttack()),
         PlanFinishEnemy(),
     )
