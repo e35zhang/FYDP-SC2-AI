@@ -78,7 +78,7 @@ def common_strategy() -> BuildOrder:
             WorkerRallyPoint(),
             PlanZoneGather(),
             PlanZoneDefense(),
-            Step(Time(5*60), action=PlanZoneAttack()),
+            Step(Time(4*60+50), action=PlanZoneAttack()),
             PlanFinishEnemy(),
         )
     )

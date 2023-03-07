@@ -211,27 +211,54 @@ class BioBot(KnowledgeBot):
 
     async def create_plan(self) -> BuildOrder:
         self.knowledge.data_manager.set_build("bio")
-        worker_scout = Step(None, WorkerScout(), skip_until=UnitExists(UnitTypeId.SUPPLYDEPOT, 1))
-        tactics = [
-            PlanCancelBuilding(),
+        #
+
+        #return BuildOrder([BuildBio(), tactics])
+        return self.three_rax_stim()
+
+    def three_rax_stim(self) -> BuildOrder:
+        return BuildOrder(
+            SequentialList(
+                Workers(12),
+                GridBuilding(unit_type=UnitTypeId.SUPPLYDEPOT, to_count=1, priority=True),
+                Workers(14),
+                GridBuilding(unit_type=UnitTypeId.BARRACKS, to_count=1, priority=True),
+                BuildGas(1),
+                Workers(18),
+                TerranUnit(UnitTypeId.REAPER, 1, priority=True),
+                Step(None, MorphOrbitals(), skip_until=UnitReady(UnitTypeId.BARRACKS, 1)),
+                Expand(2, priority=True),
+                BuildAddon(UnitTypeId.BARRACKSREACTOR, UnitTypeId.BARRACKS, 1),
+                GridBuilding(unit_type=UnitTypeId.BARRACKS, to_count=2, priority=True),
+                GridBuilding(unit_type=UnitTypeId.SUPPLYDEPOT, to_count=2, priority=True),
+                BuildOrder(
+                    BuildAddon(UnitTypeId.BARRACKSTECHLAB, UnitTypeId.BARRACKS, 2),
+                    AutoWorker(),
+                    AutoDepot(),
+                    GridBuilding(unit_type=UnitTypeId.BARRACKS, to_count=3, priority=True),
+                    Tech(UpgradeId.STIMPACK, from_building=UnitTypeId.BARRACKSTECHLAB),
+                    Tech(UpgradeId.SHIELDWALL, from_building=UnitTypeId.BARRACKSTECHLAB),
+                    TerranUnit(UnitTypeId.MARINE, 12, priority=True),
+                    TerranUnit(UnitTypeId.MARAUDER, 4, priority=True),
+                )
+            ),
+            common_strategy()
+        )
+
+def common_strategy() -> BuildOrder:
+    return BuildOrder(
+        SequentialList(
+            CallMule(50),
+            DistributeWorkers(aggressive_gas_fill=True),
             LowerDepots(),
+            PlanCancelBuilding(),
+            WorkerRallyPoint(),
+            PlanZoneGather(),
             PlanZoneDefense(),
-            worker_scout,
-            Step(None, CallMule(50), skip=Time(5 * 60)),
-            Step(None, CallMule(100), skip_until=Time(5 * 60)),
-            Step(None, ScanEnemy(), skip_until=Time(5 * 60)),
-            DistributeWorkers(),
-            #Step(None, SpeedMining(), lambda ai: ai.client.game_step > 5),
-            ManTheBunkers(),
-            Repair(),
-            ContinueBuilding(),
-            PlanZoneGatherTerran(),
-            self.attack,
+            Step(Time(4*60+30), action=PlanZoneAttack(start_attack_power=0)),
             PlanFinishEnemy(),
-        ]
-
-        return BuildOrder([BuildBio(), tactics])
-
+        )
+    )
 
 class LadderBot(BioBot):
     @property
