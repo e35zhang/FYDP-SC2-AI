@@ -57,7 +57,7 @@ def pvp_late_game_macro() -> BuildOrder:
         ),
         ProtossUnit(UnitTypeId.OBSERVER, priority=True, to_count=2),
 
-
+        common_strategy()
     )
 
 

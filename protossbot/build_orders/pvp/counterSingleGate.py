@@ -35,8 +35,9 @@ def counterSingleGate() -> BuildOrder:
                 Step(Gas(400), ProtossUnit(UnitTypeId.SENTRY, priority=True)),
                 ProtossUnit(UnitTypeId.STALKER, priority=True),
             ),
-            common_strategy()
-        )
+        ),
+        common_strategy()
+
     )
 
 
