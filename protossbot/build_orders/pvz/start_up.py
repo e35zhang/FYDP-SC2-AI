@@ -59,12 +59,15 @@ def pvz_start_up() -> BuildOrder:
                     GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=8, priority=True),
                     BuildGas(4),
                     BuildOrder(
-                        Step(Minerals(800), Expand(4)),
+                        Step(Minerals(400), Expand(4)),
                         Tech(UpgradeId.CHARGE),
-                        ProtossUnit(UnitTypeId.STALKER, 24, priority=True),
+                        GridBuilding(unit_type=UnitTypeId.ROBOTICSBAY, to_count=1),
                         GridBuilding(unit_type=UnitTypeId.ROBOTICSFACILITY, to_count=1),
                         ProtossUnit(UnitTypeId.WARPPRISM, 1, priority=True),
+                        ProtossUnit(UnitTypeId.STALKER, 24, priority=True),
+                        BuildGas(6),
                         Step(TechReady(UpgradeId.CHARGE), ProtossUnit(UnitTypeId.ZEALOT, 8, priority=True)),
+                        ProtossUnit(UnitTypeId.DISRUPTOR, to_count=3, priority=True),
                         ProtossUnit(UnitTypeId.IMMORTAL, priority=True),
                     )
                 )
@@ -76,7 +79,7 @@ def pvz_start_up() -> BuildOrder:
 
 def common_strategy() -> BuildOrder:
     return BuildOrder(
-        Step(UnitExists(UnitTypeId.ORACLE, 2, include_not_ready=False), OracleHarass()),
+        Step(Time(4*60+47), OracleHarass()),
         Step(UnitExists(UnitTypeId.ORACLE, 2, include_not_ready=False), DoubleAdeptScout(2)),
         SequentialList(
             DistributeWorkers(),

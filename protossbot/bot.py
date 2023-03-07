@@ -25,6 +25,7 @@ from .build_orders.pvz.start_up import pvz_start_up
 from .build_orders.pvz.counter_12d import counter12Pool
 from .build_orders.pvz.counter_ling_rush import counterLingRush
 from .build_orders.pvz.counterRoachRush import counterRoachRush
+from .build_orders.pvz.LateGameMacro import pvz_late_game_macro
 
 
 class ProtossBot(KnowledgeBot):
@@ -94,7 +95,7 @@ class ProtossBot(KnowledgeBot):
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.RoachRush, counterRoachRush()),
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.LingBaneRush, counterLingRush()),
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PVZMidGameMacro, pvz_start_up()),
-            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PVZLateGameMacro, pvz_start_up()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PVZLateGameMacro, pvz_late_game_macro()),
         )
 
     def pvr_build(self) -> BuildOrder:

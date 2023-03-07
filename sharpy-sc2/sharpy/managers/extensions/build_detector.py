@@ -337,11 +337,14 @@ class BuildDetector(ManagerBase):
         # PVZMidGameMacro = 220
 
         # PVZLateGameMacro = 230
+        if self.ai.time > 8*60:
+            return self._set_rush(EnemyRushBuild.PVZLateGameMacro)
 
         hatcheries: Units = self.cache.enemy(UnitTypeId.HATCHERY)
         if len(hatcheries) > 2 or self.enemy_units_manager.enemy_worker_count > 20:
             # enemy has expanded TWICE or has large amount of workers, that's no rush
-            return self._set_rush(EnemyRushBuild.PVZMidGameMacro)
+            if self.rush_build != EnemyRushBuild.PVZLateGameMacro:
+                return self._set_rush(EnemyRushBuild.PVZMidGameMacro)
 
         if self.building_started_before(UnitTypeId.ROACHWARREN, 130) or (
                 self.ai.time < 160 and self.cache.enemy(UnitTypeId.ROACH)

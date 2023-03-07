@@ -11,7 +11,7 @@ from sharpy.managers.extensions import DataManager, BuildDetector
 from sharpy.plans.protoss import *
 
 
-def pvp_late_game_macro() -> BuildOrder:
+def pvz_late_game_macro() -> BuildOrder:
     return BuildOrder(
         AutoWorker(),
         AutoPylon(),
@@ -96,6 +96,6 @@ def common_strategy() -> BuildOrder:
         WorkerRallyPoint(),
         PlanZoneGather(),
         PlanZoneDefense(),
-        PlanZoneAttack(),
+        Step(Supply(180), PlanZoneAttack()),
         PlanFinishEnemy()
     )

@@ -14,7 +14,7 @@ class DefensivePylons(ActBase):
     zone_manager: IZoneManager
     """Act of starting to build new buildings up to specified count"""
 
-    def __init__(self, to_base_index: int):
+    def __init__(self, c: int):
         self.to_base_index = to_base_index
         super().__init__()
 

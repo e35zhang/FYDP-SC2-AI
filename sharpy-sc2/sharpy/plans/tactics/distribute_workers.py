@@ -33,7 +33,7 @@ class DistributeWorkers(ActBase):
         self,
         min_gas: Optional[int] = None,
         max_gas: Optional[int] = None,
-        aggressive_gas_fill: bool = True,
+        aggressive_gas_fill: bool = False,
         evacuate_zones: bool = True,
         leave_builders_alone: bool = True,
     ):
