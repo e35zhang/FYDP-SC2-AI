@@ -101,7 +101,7 @@ class MicroStalkers(GenericMicro):
                 enemies = self.knowledge.unit_cache.enemy_in_range(unit.position, 12)
                 if enemies:
                     target = enemies.closest_to(unit).position. \
-                        towards(self.knowledge.own_main_zone.center_location.position, 8)
+                        towards(self.knowledge.zone_manager.our_zones[0].center_location.position, 8)
                     return Action(target.position, False, AbilityId.EFFECT_BLINK_STALKER)
 
             if self.model == CombatModel.StalkerToSiege and (

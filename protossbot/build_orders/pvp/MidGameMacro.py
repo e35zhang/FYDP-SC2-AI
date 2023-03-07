@@ -33,8 +33,8 @@ def pvp_mid_game_macro() -> BuildOrder:
             GridBuilding(unit_type=UnitTypeId.TWILIGHTCOUNCIL, to_count=1, priority=True),
             ProtossUnit(UnitTypeId.STALKER, 5, only_once=True, priority=True),
             DefensiveCannons(0, 1, 1),
-            GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=4, priority=True),
             Tech(UpgradeId.BLINKTECH),
+            GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=4, priority=True),
             GridBuilding(unit_type=UnitTypeId.ROBOTICSFACILITY, to_count=1, priority=True),
             ProtossUnit(UnitTypeId.STALKER, 8, only_once=True, priority=True),
             ProtossUnit(UnitTypeId.SENTRY, 2, only_once=True, priority=True),
@@ -97,9 +97,6 @@ def pvp_mid_game_macro() -> BuildOrder:
             StepBuildGas(to_count=6, requirement=UnitExists(UnitTypeId.NEXUS, 3)),
 
             Step(Supply(80), GridBuilding(unit_type=UnitTypeId.STARGATE, to_count=1)),
-
-            # this is the final golden armada
-            Step(Supply(120), self.pvt_macro_build()),
 
             # units
 

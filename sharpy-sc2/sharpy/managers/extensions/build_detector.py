@@ -284,12 +284,12 @@ class BuildDetector(ManagerBase):
                     self._set_rush(EnemyRushBuild.TwilightExpand)
                     return
                 if len(self.cache.enemy(UnitTypeId.GATEWAY)) > 2:
-                    self.rush_build(EnemyRushBuild.ProxyFourGate)
+                    self._set_rush(EnemyRushBuild.ProxyFourGate)
                     return
-                self.rush_build(EnemyRushBuild.PVPMidGameMacro)
+                self._set_rush(EnemyRushBuild.PVPMidGameMacro)
 
         if self.ai.time > 12*60:
-            self.rush_build(EnemyRushBuild.PVPLateGameMacro)
+            self._set_rush(EnemyRushBuild.PVPLateGameMacro)
             return
 
 
