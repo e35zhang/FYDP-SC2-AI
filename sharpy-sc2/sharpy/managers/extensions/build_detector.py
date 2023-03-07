@@ -348,7 +348,7 @@ class BuildDetector(ManagerBase):
         if self.building_started_before(UnitTypeId.SPAWNINGPOOL, 26):
             return self._set_rush(EnemyRushBuild.Pool12)
 
-        if self.building_started_before(UnitTypeId.SPAWNINGPOOL, 40) and self.rush_build != EnemyRushBuild.Pool12:
+        if self.building_started_before(UnitTypeId.SPAWNINGPOOL, 48) and self.rush_build != EnemyRushBuild.Pool12:
             # Very early pool detected
             return self._set_rush(EnemyRushBuild.Pool17)
 
