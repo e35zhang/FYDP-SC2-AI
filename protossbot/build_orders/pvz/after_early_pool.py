@@ -27,7 +27,7 @@ def pvz_after_early_pool() -> BuildOrder:
             BuildGas(2),
             GridBuilding(unit_type=UnitTypeId.ROBOTICSBAY, to_count=1, priority=True),
             GridBuilding(unit_type=UnitTypeId.ROBOTICSFACILITY, to_count=2, priority=True),
-            BuildGas(3),
+            BuildGas(4),
             ProtossUnit(UnitTypeId.IMMORTAL, to_count=2, priority=True),
             ProtossUnit(UnitTypeId.COLOSSUS, to_count=1, priority=True),
             ProtossUnit(UnitTypeId.WARPPRISM, to_count=1, priority=True),

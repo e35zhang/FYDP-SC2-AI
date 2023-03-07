@@ -47,7 +47,7 @@ def pvt_start_up() -> BuildOrder:
                     ProtossUnit(UnitTypeId.STALKER, priority=True, to_count=5, only_once=True),
                     BuildGas(3),
                     ProtossUnit(UnitTypeId.WARPPRISM, priority=True, to_count=1),
-                    ProtossUnit(UnitTypeId.STALKER, priority=True, to_count=16),
+                    ProtossUnit(UnitTypeId.STALKER, priority=True, to_count=12, only_once=True),
                     BuildOrder(
                         Expand(3),
                         BuildGas(4),
@@ -70,13 +70,15 @@ def pvt_start_up() -> BuildOrder:
 def common_strategy() -> BuildOrder:
     return BuildOrder(
         Step(UnitExists(UnitTypeId.STALKER, 1, include_not_ready=False), DoubleAdeptScout(1)),
-        DistributeWorkers(),
-        PlanHallucination(),
-        HallucinatedPhoenixScout(),
-        PlanCancelBuilding(),
-        WorkerRallyPoint(),
-        PlanZoneGather(),
-        PlanZoneDefense(),
-        Step(Time(5*60), PlanZoneAttack()),
-        PlanFinishEnemy()
+        SequentialList(
+            DistributeWorkers(),
+            PlanHallucination(),
+            HallucinatedPhoenixScout(),
+            PlanCancelBuilding(),
+            WorkerRallyPoint(),
+            PlanZoneGather(),
+            PlanZoneDefense(),
+            Step(Time(5*60), action=PlanZoneAttack()),
+            PlanFinishEnemy(),
+        )
     )
