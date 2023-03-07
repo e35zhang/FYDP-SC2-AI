@@ -28,6 +28,9 @@ from .build_orders.pvz.counterRoachRush import counterRoachRush
 from .build_orders.pvz.LateGameMacro import pvz_late_game_macro
 
 
+from .build_orders.pvt.start_up import pvt_start_up
+
+
 class ProtossBot(KnowledgeBot):
     data_manager: DataManager
 
@@ -83,8 +86,21 @@ class ProtossBot(KnowledgeBot):
 
         )
 
+
     def pvt_build(self) -> BuildOrder:
-        return self.pvp_build()
+        return BuildOrder(
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.Start, pvt_start_up()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.ProxyTwoRaxMarine, pvt_start_up()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.WorkerRush, pvt_start_up()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.ProxyThreeRaxMarine, pvt_start_up()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.ProxyReaper, pvt_start_up()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.ProxyMarauders, pvt_start_up()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.OneBaseTech, pvt_start_up()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.ThreeRaxStim, pvt_start_up()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.RaxFactPort, pvt_start_up()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PVTMidGameMacro, pvt_start_up()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PVTLateGameMacro, pvt_start_up()),
+        )
 
     def pvz_build(self) -> BuildOrder:
         return BuildOrder(

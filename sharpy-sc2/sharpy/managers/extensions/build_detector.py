@@ -320,13 +320,13 @@ class BuildDetector(ManagerBase):
                     and barracks >= 1
                     and factories == 0
             ):
-                return self._set_rush(EnemyRushBuild.Marauders)
+                return self._set_rush(EnemyRushBuild.ProxyMarauders)
 
             if self.ai.time > 110 and close_barracks == 0 and factories == 0 and only_cc_seen:
-                return self._set_rush(EnemyRushBuild.ProxyRax)
+                return self._set_rush(EnemyRushBuild.ProxyReaper)
 
             if barracks + factories > 2:
-                return self._set_rush(EnemyRushBuild.OneBaseRax)
+                return self._set_rush(EnemyRushBuild.OneBaseTech)
 
     def _zerg_rushes(self):
         # Pool12 = 200
