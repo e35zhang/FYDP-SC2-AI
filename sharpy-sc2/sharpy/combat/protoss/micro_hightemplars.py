@@ -29,8 +29,18 @@ class MicroHighTemplars(GenericMicro):
         self.ordered_storms.clear()
 
     def unit_solve_combat(self, unit: Unit, current_command: Action) -> Action:
+        # before death
+        if unit.shield_health_percentage <= 0.3:
+            if self.cd_manager.is_ready(unit.tag, AbilityId.FEEDBACK_FEEDBACK):
+                feedback_enemies = self.cache.enemy_in_range(unit.position, 10).filter(
+                    lambda u: u.energy_percentage > 0.5 and not u.is_structure
+                )
+                if feedback_enemies:
+                    closest = feedback_enemies.closest_to(unit)
+                    return Action(closest, False, AbilityId.FEEDBACK_FEEDBACK)
+
         if self.cd_manager.is_ready(unit.tag, AbilityId.PSISTORM_PSISTORM):
-            stormable_enemies = self.cache.enemy_in_range(unit.position, 10).not_structure
+            stormable_enemies = self.cache.enemy_in_range(unit.position, 12).not_structure
             storms = self.cache.effects(EffectId.PSISTORMPERSISTENT)
 
             for storm in storms:

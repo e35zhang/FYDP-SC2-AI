@@ -25,16 +25,16 @@ class MicroPhoenixes(MicroStep):
             # negative number: Never try lifting
             # Terran
             UnitTypeId.SIEGETANK: 4,
-            UnitTypeId.SIEGETANKSIEGED: 9,  # sieged tanks are much higher priority than unsieged
+            UnitTypeId.SIEGETANKSIEGED: 30,  # sieged tanks are much higher priority than unsieged
             UnitTypeId.MULE: 6,  # Would be nice to check it's remaining duration
             UnitTypeId.SCV: 4,
-            UnitTypeId.WIDOWMINEBURROWED: 10,
-            UnitTypeId.WIDOWMINE: 8,
+            UnitTypeId.WIDOWMINEBURROWED: 30,
+            UnitTypeId.WIDOWMINE: 30,
             UnitTypeId.GHOST: 10,
             UnitTypeId.REAPER: 4,
             UnitTypeId.MARAUDER: 4,
-            UnitTypeId.MARINE: 3,
-            UnitTypeId.CYCLONE: 6,
+            UnitTypeId.MARINE: 20,
+            UnitTypeId.CYCLONE: 30,
             UnitTypeId.HELLION: 2,
             UnitTypeId.HELLIONTANK: 1,
             UnitTypeId.THOR: -1,

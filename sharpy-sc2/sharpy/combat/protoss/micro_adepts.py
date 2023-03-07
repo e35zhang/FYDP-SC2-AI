@@ -9,8 +9,8 @@ from sharpy.combat import GenericMicro, Action, MoveType, CombatModel
 
 high_priority: Dict[UnitTypeId, int] = {
     # Terran
-    UnitTypeId.MULE: 9,
-    UnitTypeId.SCV: 9,
+    UnitTypeId.MULE: 30,
+    UnitTypeId.SCV: 30,
     UnitTypeId.SIEGETANK: 3,
     UnitTypeId.SIEGETANKSIEGED: 5,  # sieged tanks are much higher priority than unsieged
     UnitTypeId.GHOST: 10,
@@ -31,7 +31,7 @@ high_priority: Dict[UnitTypeId, int] = {
     UnitTypeId.MISSILETURRET: 1,
     UnitTypeId.BUNKER: 2,
     # Zerg
-    UnitTypeId.DRONE: 9,
+    UnitTypeId.DRONE: 30,
     UnitTypeId.ZERGLING: 8,
     UnitTypeId.BANELING: 10,
     UnitTypeId.ULTRALISK: 4,
@@ -52,7 +52,7 @@ high_priority: Dict[UnitTypeId, int] = {
     UnitTypeId.LOCUSTMP: -1,
     # Protoss
     UnitTypeId.SENTRY: 9,
-    UnitTypeId.PROBE: 10,
+    UnitTypeId.PROBE: 30,
     UnitTypeId.HIGHTEMPLAR: 10,
     UnitTypeId.DARKTEMPLAR: 9,
     UnitTypeId.ADEPT: 8,
