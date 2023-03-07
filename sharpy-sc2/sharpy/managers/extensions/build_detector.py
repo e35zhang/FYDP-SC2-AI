@@ -286,6 +286,12 @@ class BuildDetector(ManagerBase):
                 if len(self.cache.enemy(UnitTypeId.GATEWAY)) > 2:
                     self.rush_build(EnemyRushBuild.ProxyFourGate)
                     return
+                self.rush_build(EnemyRushBuild.PVPMidGameMacro)
+
+        if self.ai.time > 12*60:
+            self.rush_build(EnemyRushBuild.PVPLateGameMacro)
+            return
+
 
     def _terran_rushes(self):
         only_cc_seen = False

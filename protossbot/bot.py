@@ -18,6 +18,8 @@ from .build_orders.pvp.counterProxyZealots import counterProxyZealots
 from .build_orders.pvp.counterProxyRobo import counterProxyRobo
 from .build_orders.pvp.counterProxyFourGates import counterProxyFourGates
 from .build_orders.pvp.counterSingleGate import counterSingleGate
+from .build_orders.pvp.MidGameMacro import pvp_mid_game_macro
+from .build_orders.pvp.LateGameMacro import pvp_late_game_macro
 
 from .build_orders.pvz.start_up import pvz_start_up
 from .build_orders.pvz.counter_12d import counter12Pool
@@ -72,11 +74,11 @@ class ProtossBot(KnowledgeBot):
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.ProxyVoid, counterNexusFirst()),
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.ProxyFourGate, counterProxyFourGates()),
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PotentialProxy, counterProxyFourGates()),
-            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.RoboExpand, counterNexusFirst()),
-            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.StargateExpand, counterNexusFirst()),
-            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.TwilightExpand, counterNexusFirst()),
-            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PVPMidGameMacro, counterNexusFirst()),
-            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PVPLateGameMacro, counterNexusFirst()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.RoboExpand, pvp_mid_game_macro()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.StargateExpand, pvp_mid_game_macro()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.TwilightExpand, pvp_mid_game_macro()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PVPMidGameMacro, pvp_mid_game_macro()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PVPLateGameMacro, pvp_late_game_macro()),
 
         )
 

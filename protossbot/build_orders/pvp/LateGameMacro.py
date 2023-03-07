@@ -11,35 +11,52 @@ from sharpy.managers.extensions import DataManager, BuildDetector
 from sharpy.plans.protoss import *
 
 
-def pvp_start_up() -> BuildOrder:
+def pvp_late_game_macro() -> BuildOrder:
     return BuildOrder(
-        SequentialList(
-            Workers(14),
-            GridBuilding(unit_type=UnitTypeId.PYLON, to_count=1, priority=True),
-            Step(UnitExists(UnitTypeId.PYLON), action=WorkerScout()),
-            Workers(15),
-            GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=1, priority=True),
-            Step(UnitExists(UnitTypeId.NEXUS), action=ChronoUnit(UnitTypeId.PROBE, UnitTypeId.NEXUS, 1)),
-            Workers(17),
-            BuildGas(1),
-            Workers(18),
-            BuildGas(2),
-            Workers(19),
-            GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=2, priority=True),
-            GridBuilding(unit_type=UnitTypeId.CYBERNETICSCORE, to_count=1, priority=True),
-            Workers(20),
-            GridBuilding(unit_type=UnitTypeId.PYLON, to_count=2, priority=True),
-            Workers(23),
-            Tech(UpgradeId.WARPGATERESEARCH),
-            ProtossUnit(UnitTypeId.STALKER, 1, only_once=True, priority=True),
-            ProtossUnit(UnitTypeId.SENTRY, 1, only_once=True, priority=True),
-            ProtossUnit(UnitTypeId.STALKER, 3, only_once=True, priority=True),
-            Expand(2),
-            ProtossUnit(UnitTypeId.STALKER, priority=True),
-            AutoPylon(),
-            AutoWorker(),
+        AutoWorker(),
+        AutoPylon(),
+
+        ChronoAnyTech(save_to_energy=50),
+        ChronoUnit(UnitTypeId.TEMPEST, UnitTypeId.STARGATE, 10),
+        ChronoUnit(UnitTypeId.MOTHERSHIP, UnitTypeId.NEXUS, 3),
+        ChronoUnit(UnitTypeId.IMMORTAL, UnitTypeId.ROBOTICSFACILITY, 5),
+        GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=6),
+
+        Step(
+            Minerals(700),
+            ProtossUnit(UnitTypeId.ZEALOT, priority=True),
         ),
-        common_strategy()
+
+        Step(
+            Gas(700),
+            SequentialList(
+                GridBuilding(unit_type=UnitTypeId.TEMPLARARCHIVE, to_count=1),
+                ProtossUnit(UnitTypeId.HIGHTEMPLAR, priority=True),
+                Archon([UnitTypeId.HIGHTEMPLAR]),
+            )
+        ),
+
+        Step(
+            UnitExists(UnitTypeId.NEXUS, 4),
+            SequentialList(
+                Tech(UpgradeId.PROTOSSSHIELDSLEVEL1),
+                Tech(UpgradeId.PROTOSSGROUNDWEAPONSLEVEL2),
+                Tech(UpgradeId.PROTOSSGROUNDARMORSLEVEL2),
+                Tech(UpgradeId.PROTOSSSHIELDSLEVEL2),
+            )
+        ),
+
+        Step(
+            UnitExists(UnitTypeId.NEXUS, 4),
+            SequentialList(
+                GridBuilding(unit_type=UnitTypeId.STARGATE, to_count=1, priority=True),
+                GridBuilding(unit_type=UnitTypeId.FLEETBEACON, to_count=1, priority=True),
+                ProtossUnit(UnitTypeId.PHOENIX, priority=True, to_count=6),
+                ProtossUnit(UnitTypeId.MOTHERSHIP, priority=True, to_count=1),
+            )
+        ),
+        ProtossUnit(UnitTypeId.OBSERVER, priority=True, to_count=2),
+
 
     )
 
