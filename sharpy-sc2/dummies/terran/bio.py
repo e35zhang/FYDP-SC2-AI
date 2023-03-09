@@ -240,6 +240,21 @@ class BioBot(KnowledgeBot):
                     Tech(UpgradeId.SHIELDWALL, from_building=UnitTypeId.BARRACKSTECHLAB),
                     TerranUnit(UnitTypeId.MARINE, 12, priority=True),
                     TerranUnit(UnitTypeId.MARAUDER, 4, priority=True),
+                    Step(Time(5*60+30),
+                    SequentialList(
+                        Expand(3, priority=True),
+                        BuildGas(4),
+                        GridBuilding(unit_type=UnitTypeId.FACTORY, to_count=1, priority=True),
+                        GridBuilding(unit_type=UnitTypeId.BARRACKS, to_count=6, priority=True),
+                        BuildAddon(UnitTypeId.FACTORYTECHLAB, UnitTypeId.FACTORY, 1),
+                        GridBuilding(unit_type=UnitTypeId.STARPORT, to_count=1, priority=True),
+                        BuildAddon(UnitTypeId.STARPORTTECHLAB, UnitTypeId.STARPORT, 1),
+                    ),
+                    ),
+                    TerranUnit(UnitTypeId.MEDIVAC, 8, priority=True),
+                    TerranUnit(UnitTypeId.SIEGETANK, 3, priority=True),
+                    TerranUnit(UnitTypeId.MARINE, priority=True),
+                    TerranUnit(UnitTypeId.MARAUDER, priority=True),
                 )
             ),
             common_strategy()
@@ -255,7 +270,7 @@ def common_strategy() -> BuildOrder:
             WorkerRallyPoint(),
             PlanZoneGather(),
             PlanZoneDefense(),
-            Step(Time(4*60+30), action=PlanZoneAttack(start_attack_power=0)),
+            Step(Time(4*60+30), action=PlanZoneAttack()),
             PlanFinishEnemy(),
         )
     )
