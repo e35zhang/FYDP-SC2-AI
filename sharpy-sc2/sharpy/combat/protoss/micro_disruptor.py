@@ -37,7 +37,7 @@ class MicroDisruptor(MicroStep):
 
         if self.cd_manager.is_ready(unit.tag, AbilityId.EFFECT_PURIFICATIONNOVA):
             distance = self.pather.walk_distance(unit.position, center)
-            if distance < 9:
+            if distance < 12:
                 self.last_used_any = time
                 return Action(center, False, AbilityId.EFFECT_PURIFICATIONNOVA)
             else:

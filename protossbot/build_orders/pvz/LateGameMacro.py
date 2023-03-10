@@ -20,21 +20,23 @@ def pvz_late_game_macro() -> BuildOrder:
         StepBuildGas(requirement=UnitExists(UnitTypeId.NEXUS, 4), to_count=8),
         StepBuildGas(requirement=UnitExists(UnitTypeId.NEXUS, 5), to_count=10),
         ChronoAnyTech(save_to_energy=50),
-        ChronoUnit(UnitTypeId.TEMPEST, UnitTypeId.STARGATE, 10),
+        ChronoUnit(UnitTypeId.CARRIER, UnitTypeId.STARGATE, 10),
         ChronoUnit(UnitTypeId.MOTHERSHIP, UnitTypeId.NEXUS, 3),
         ChronoUnit(UnitTypeId.IMMORTAL, UnitTypeId.ROBOTICSFACILITY, 5),
+        ChronoUnit(UnitTypeId.DISRUPTOR, UnitTypeId.ROBOTICSFACILITY, 4),
         GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=6),
         GridBuilding(unit_type=UnitTypeId.STARGATE, to_count=1),
         GridBuilding(unit_type=UnitTypeId.ROBOTICSBAY, to_count=1),
         GridBuilding(unit_type=UnitTypeId.ROBOTICSFACILITY, to_count=2),
+        Expand(4),
+
+        #Step(
+        #    Minerals(500),
+        #    DefensiveCannons(to_count_pre_base=2, additional_batteries=1),
+        #),
 
         Step(
-            Minerals(500),
-            DefensiveCannons(to_count_pre_base=2, additional_batteries=1),
-        ),
-
-        Step(
-            Minerals(800),
+            Minerals(1000),
             ProtossUnit(UnitTypeId.ZEALOT, to_count=12, priority=True),
         ),
         Step(
@@ -43,7 +45,7 @@ def pvz_late_game_macro() -> BuildOrder:
         ),
 
         Step(
-            Gas(700),
+            Gas(1000),
             SequentialList(
                 GridBuilding(unit_type=UnitTypeId.TEMPLARARCHIVE, to_count=1),
                 ProtossUnit(UnitTypeId.HIGHTEMPLAR, priority=True),
@@ -96,6 +98,6 @@ def common_strategy() -> BuildOrder:
         WorkerRallyPoint(),
         PlanZoneGather(),
         PlanZoneDefense(),
-        Step(Supply(180), PlanZoneAttack()),
-        PlanFinishEnemy()
+        Step(Supply(180), action=PlanZoneAttack()),
+        Step(Supply(195), action=PlanFinishEnemy()),
     )
