@@ -63,7 +63,6 @@ def pvz_start_up() -> BuildOrder:
                         Tech(UpgradeId.CHARGE),
                         GridBuilding(unit_type=UnitTypeId.ROBOTICSBAY, to_count=1),
                         GridBuilding(unit_type=UnitTypeId.ROBOTICSFACILITY, to_count=1),
-                        ProtossUnit(UnitTypeId.WARPPRISM, 1, priority=True),
                         ProtossUnit(UnitTypeId.STALKER, 24, priority=True),
                         BuildGas(6),
                         Step(TechReady(UpgradeId.CHARGE), ProtossUnit(UnitTypeId.ZEALOT, 8, priority=True)),

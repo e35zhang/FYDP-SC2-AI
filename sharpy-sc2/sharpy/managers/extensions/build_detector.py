@@ -337,7 +337,7 @@ class BuildDetector(ManagerBase):
         # PVZMidGameMacro = 220
 
         # PVZLateGameMacro = 230
-        if self.ai.time > 8*60:
+        if self.ai.time > 7*60+40:
             return self._set_rush(EnemyRushBuild.PVZLateGameMacro)
 
         hatcheries: Units = self.cache.enemy(UnitTypeId.HATCHERY)

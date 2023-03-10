@@ -23,7 +23,7 @@ class OracleHarass(ActBase):
     async def execute(self) -> bool:
         if self.ended:
             return True
-        if self.ai.time > 7*60:
+        if self.ai.time > 6*60:
             self.ended = True
             return True
         oracles = self.knowledge.unit_cache.own(UnitTypeId.ORACLE).ready
@@ -58,6 +58,7 @@ class OracleHarass(ActBase):
                             else:
                                 self.oracle_evasive_move_to(oracle_index, position)
                         elif harass_oracle.shield_percentage <= 0.3:
+                            harass_oracle(AbilityId.BEHAVIOR_PULSARBEAMOFF)
                             if self.knowledge.zone_manager.our_zones:
                                 self.oracle_evasive_move_to(oracle_index, retreat_point)
                     else:
@@ -111,6 +112,7 @@ class OracleHarass(ActBase):
                     self.oracle_evasive_move_to(oracle_index, attack_point)
             elif self.oracle_in_danger(oracle_index) and self.already_begin_attack[oracle_index]:
                 if harass_oracle.shield_percentage <= 0.3:
+                    harass_oracle(AbilityId.BEHAVIOR_PULSARBEAMOFF)
                     self.oracle_evasive_move_to(oracle_index, retreat_point)
                     self.reached_position[oracle_index] = False
             else:

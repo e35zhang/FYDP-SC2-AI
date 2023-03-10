@@ -50,7 +50,7 @@ class PlanZoneAttack(ActBase):
     game_analyzer: Optional[IGameAnalyzer]
     pather: "PathingManager"
 
-    DISTANCE_TO_INCLUDE = 18
+    DISTANCE_TO_INCLUDE = 22
     DISTANCE2_TO_INCLUDE = 18 * 18
     RETREAT_POWER_PERCENTAGE = 0.8
 
