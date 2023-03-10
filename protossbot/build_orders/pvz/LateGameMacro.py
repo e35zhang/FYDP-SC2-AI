@@ -96,6 +96,6 @@ def common_strategy() -> BuildOrder:
         WorkerRallyPoint(),
         PlanZoneGather(),
         PlanZoneDefense(),
-        Step(Supply(180), PlanZoneAttack()),
+        Step(Supply(180), action=PlanZoneAttack()),
         PlanFinishEnemy()
     )
