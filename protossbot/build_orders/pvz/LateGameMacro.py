@@ -15,7 +15,7 @@ def pvz_late_game_macro() -> BuildOrder:
     return BuildOrder(
         AutoWorker(),
         AutoPylon(),
-
+        GridBuilding(unit_type=UnitTypeId.CYBERNETICSCORE, to_count=1),
         StepBuildGas(requirement=UnitExists(UnitTypeId.NEXUS, 3), to_count=6),
         StepBuildGas(requirement=UnitExists(UnitTypeId.NEXUS, 4), to_count=8),
         StepBuildGas(requirement=UnitExists(UnitTypeId.NEXUS, 5), to_count=10),
@@ -48,13 +48,13 @@ def pvz_late_game_macro() -> BuildOrder:
             Gas(1000),
             SequentialList(
                 GridBuilding(unit_type=UnitTypeId.TEMPLARARCHIVE, to_count=1),
-                ProtossUnit(UnitTypeId.HIGHTEMPLAR, priority=True),
-                Archon([UnitTypeId.HIGHTEMPLAR]),
+                Tech(UpgradeId.PSISTORMTECH),
+                ProtossUnit(UnitTypeId.HIGHTEMPLAR, priority=True, to_count=2),
             )
         ),
 
         Step(
-            UnitExists(UnitTypeId.NEXUS, 5),
+            UnitExists(UnitTypeId.NEXUS, 4),
             SequentialList(
                 Tech(UpgradeId.PROTOSSSHIELDSLEVEL1),
                 Tech(UpgradeId.PROTOSSGROUNDWEAPONSLEVEL1),
@@ -74,13 +74,15 @@ def pvz_late_game_macro() -> BuildOrder:
                 GridBuilding(unit_type=UnitTypeId.STARGATE, to_count=1, priority=True),
                 GridBuilding(unit_type=UnitTypeId.FLEETBEACON, to_count=1, priority=True),
                 GridBuilding(unit_type=UnitTypeId.STARGATE, to_count=3, priority=True),
-                ProtossUnit(UnitTypeId.VOIDRAY, priority=True, to_count=6),
-                ProtossUnit(UnitTypeId.CARRIER, priority=True, to_count=9),
-                ProtossUnit(UnitTypeId.MOTHERSHIP, priority=True, to_count=1),
             )
         ),
-        ProtossUnit(UnitTypeId.OBSERVER, priority=True, to_count=2),
+        ProtossUnit(UnitTypeId.OBSERVER, priority=True, to_count=1),
         ProtossUnit(UnitTypeId.DISRUPTOR, priority=True, to_count=4),
+
+        ProtossUnit(UnitTypeId.VOIDRAY, priority=True, to_count=6),
+        ProtossUnit(UnitTypeId.CARRIER, priority=True, to_count=9),
+        ProtossUnit(UnitTypeId.MOTHERSHIP, priority=True, to_count=1),
+
         ProtossUnit(UnitTypeId.HIGHTEMPLAR, priority=True, to_count=2),
         ProtossUnit(UnitTypeId.IMMORTAL, priority=True, to_count=3),
         ProtossUnit(UnitTypeId.STALKER, priority=True, to_count=10),
@@ -89,8 +91,8 @@ def pvz_late_game_macro() -> BuildOrder:
     )
 
 
-def common_strategy() -> BuildOrder:
-    return BuildOrder(
+def common_strategy() -> SequentialList:
+    return SequentialList(
         DistributeWorkers(),
         PlanHallucination(),
         HallucinatedPhoenixScout(),
@@ -99,5 +101,5 @@ def common_strategy() -> BuildOrder:
         PlanZoneGather(),
         PlanZoneDefense(),
         Step(Supply(180), action=PlanZoneAttack()),
-        Step(Supply(195), action=PlanFinishEnemy()),
+        PlanFinishEnemy(),
     )
