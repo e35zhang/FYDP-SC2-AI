@@ -15,26 +15,31 @@ from sharpy.plans.protoss import *
 def pvt_fourgates() -> BuildOrder:
     return BuildOrder(
         SequentialList(
-            Workers(13),
+            Workers(14),
             GridBuilding(unit_type=UnitTypeId.PYLON, to_count=1, priority=True),
-            WorkerScout(),
+            Step(UnitExists(UnitTypeId.PYLON), action=WorkerScout()),
             Workers(15),
             GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=1, priority=True),
-            Step(UnitExists(UnitTypeId.PYLON), action=ChronoUnit(UnitTypeId.PROBE, UnitTypeId.NEXUS, 1)),
+            Step(UnitExists(UnitTypeId.NEXUS), action=ChronoUnit(UnitTypeId.PROBE, UnitTypeId.NEXUS, 1)),
             Workers(17),
+            BuildGas(1),
+            Workers(18),
             BuildGas(2),
+            Workers(19),
             GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=2, priority=True),
-            Workers(20),
             GridBuilding(unit_type=UnitTypeId.CYBERNETICSCORE, to_count=1, priority=True),
+            Workers(20),
             GridBuilding(unit_type=UnitTypeId.PYLON, to_count=2, priority=True),
-            Workers(22),
+            Workers(23),
             Tech(UpgradeId.WARPGATERESEARCH),
+            ProtossUnit(UnitTypeId.ADEPT, 2, only_once=True, priority=True),
+            ChronoUnit(UnitTypeId.ADEPT, UnitTypeId.GATEWAY, 2),
             GridBuilding(unit_type=UnitTypeId.ROBOTICSFACILITY, to_count=1, priority=True),
             ProtossUnit(UnitTypeId.STALKER, priority=True, to_count=2, only_once=True),
-            GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=3, priority=True),
-            ProtossUnit(UnitTypeId.WARPPRISM, priority=True, to_count=1),
-            ProtossUnit(UnitTypeId.STALKER, priority=True, to_count=3, only_once=True),
+            GridBuilding(unit_type=UnitTypeId.PYLON, to_count=3, priority=True),
             GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=4, priority=True),
+            ProtossUnit(UnitTypeId.WARPPRISM, priority=True, to_count=1),
+            ProtossUnit(UnitTypeId.STALKER, priority=True, to_count=4, only_once=True),
             BuildOrder(
                 AutoPylon(),
                 ProtossUnit(UnitTypeId.STALKER, priority=True),
@@ -45,7 +50,7 @@ def pvt_fourgates() -> BuildOrder:
     )
 def common_strategy() -> BuildOrder:
     return BuildOrder(
-        Step(UnitExists(UnitTypeId.STALKER, 1, include_not_ready=False), DoubleAdeptScout(1)),
+        DoubleAdeptScout(2),
         SequentialList(
             DistributeWorkers(),
             PlanHallucination(),

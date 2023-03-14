@@ -27,7 +27,7 @@ def pvz_start_up() -> BuildOrder:
             GridBuilding(unit_type=UnitTypeId.CYBERNETICSCORE, to_count=1, priority=True),
             Workers(21),
             BuildGas(2),
-            GridBuilding(unit_type=UnitTypeId.PYLON, to_count=2, priority=True),
+            DefensivePylons(to_base_index=0),
 
             ProtossUnit(UnitTypeId.ADEPT, 1, only_once=True, priority=True),
             Step(UnitExists(UnitTypeId.NEXUS), action=ChronoUnit(UnitTypeId.PROBE, UnitTypeId.NEXUS, 2)),
@@ -42,6 +42,7 @@ def pvz_start_up() -> BuildOrder:
                     ProtossUnit(UnitTypeId.ORACLE, 1, only_once=True, priority=True),
                     GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=2, priority=True),
                     Expand(3),
+                    DefensivePylons(to_base_index=2),
                     Step(UnitExists(UnitTypeId.NEXUS), action=ChronoUnit(UnitTypeId.PROBE, UnitTypeId.NEXUS, 4)),
                     ProtossUnit(UnitTypeId.ORACLE, 2, only_once=True, priority=True),
                     ProtossUnit(UnitTypeId.ADEPT, 3, priority=True),

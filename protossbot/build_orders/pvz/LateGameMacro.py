@@ -16,6 +16,7 @@ def pvz_late_game_macro() -> BuildOrder:
         AutoWorker(),
         AutoPylon(),
         GridBuilding(unit_type=UnitTypeId.CYBERNETICSCORE, to_count=1),
+        GridBuilding(unit_type=UnitTypeId.ROBOTICSBAY, to_count=1),
         StepBuildGas(requirement=UnitExists(UnitTypeId.NEXUS, 3), to_count=6),
         StepBuildGas(requirement=UnitExists(UnitTypeId.NEXUS, 4), to_count=8),
         StepBuildGas(requirement=UnitExists(UnitTypeId.NEXUS, 5), to_count=10),
@@ -26,7 +27,6 @@ def pvz_late_game_macro() -> BuildOrder:
         ChronoUnit(UnitTypeId.DISRUPTOR, UnitTypeId.ROBOTICSFACILITY, 4),
         GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=6),
         GridBuilding(unit_type=UnitTypeId.STARGATE, to_count=1),
-        GridBuilding(unit_type=UnitTypeId.ROBOTICSBAY, to_count=1),
         GridBuilding(unit_type=UnitTypeId.ROBOTICSFACILITY, to_count=2),
         Expand(4),
 
@@ -93,7 +93,7 @@ def pvz_late_game_macro() -> BuildOrder:
 
 def common_strategy() -> SequentialList:
     return SequentialList(
-        DistributeWorkers(),
+        DistributeWorkers(aggressive_gas_fill=True),
         PlanHallucination(),
         HallucinatedPhoenixScout(),
         PlanCancelBuilding(),

@@ -16,7 +16,7 @@ def pvt_start_up() -> BuildOrder:
     return BuildOrder(
         SequentialList(
             Workers(13),
-            GridBuilding(unit_type=UnitTypeId.PYLON, to_count=1, priority=True),
+            DefensivePylons(to_base_index=0),
             WorkerScout(),
             Workers(15),
             GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=1, priority=True),
@@ -26,7 +26,7 @@ def pvt_start_up() -> BuildOrder:
             Workers(20),
             GridBuilding(unit_type=UnitTypeId.CYBERNETICSCORE, to_count=1, priority=True),
             Expand(2, priority=True),
-            GridBuilding(unit_type=UnitTypeId.PYLON, to_count=2, priority=True),
+            DefensivePylons(to_base_index=1),
             Workers(21),
             BuildGas(2),
             ProtossUnit(UnitTypeId.ADEPT, priority=True, to_count=1, only_once=True),
