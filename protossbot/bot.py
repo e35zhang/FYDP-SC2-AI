@@ -29,6 +29,7 @@ from .build_orders.pvz.LateGameMacro import pvz_late_game_macro
 
 
 from .build_orders.pvt.start_up import pvt_start_up
+from .build_orders.pvt.LateGameMacro import pvt_late_game_macro
 
 
 class ProtossBot(KnowledgeBot):
@@ -99,7 +100,7 @@ class ProtossBot(KnowledgeBot):
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.ThreeRaxStim, pvt_start_up()),
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.RaxFactPort, pvt_start_up()),
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PVTMidGameMacro, pvt_start_up()),
-            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PVTLateGameMacro, pvt_start_up()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PVTLateGameMacro, pvt_late_game_macro()),
         )
 
     def pvz_build(self) -> BuildOrder:

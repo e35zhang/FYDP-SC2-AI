@@ -58,18 +58,16 @@ def pvz_start_up() -> BuildOrder:
                     BuildGas(3),
                     GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=8, priority=True),
                     BuildGas(4),
-                    BuildOrder(
-                        Step(Minerals(400), Expand(4)),
-                        Tech(UpgradeId.CHARGE),
-                        GridBuilding(unit_type=UnitTypeId.ROBOTICSBAY, to_count=1),
-                        GridBuilding(unit_type=UnitTypeId.ROBOTICSFACILITY, to_count=1),
-                        ProtossUnit(UnitTypeId.STALKER, 24, priority=True),
-                        BuildGas(6),
-                        Step(TechReady(UpgradeId.CHARGE), ProtossUnit(UnitTypeId.ZEALOT, 8, priority=True)),
-                        ProtossUnit(UnitTypeId.DISRUPTOR, to_count=3, priority=True),
-                        ProtossUnit(UnitTypeId.IMMORTAL, priority=True),
-                    )
-                )
+                    ProtossUnit(UnitTypeId.STALKER, to_count=16, priority=True, only_once=True),
+                    GridBuilding(unit_type=UnitTypeId.ROBOTICSFACILITY, to_count=1),
+                    Expand(4),
+                    Tech(UpgradeId.CHARGE),
+                    BuildGas(6),
+                    GridBuilding(unit_type=UnitTypeId.ROBOTICSBAY, to_count=1),
+                    ProtossUnit(UnitTypeId.DISRUPTOR, to_count=3, priority=True),
+                    ProtossUnit(UnitTypeId.IMMORTAL, priority=True),
+                ),
+                Step(TechReady(UpgradeId.CHARGE), ProtossUnit(UnitTypeId.ZEALOT, 8, priority=True)),
             )
         ),
         common_strategy()

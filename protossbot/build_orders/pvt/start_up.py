@@ -55,10 +55,11 @@ def pvt_start_up() -> BuildOrder:
                         ProtossUnit(UnitTypeId.WARPPRISM, priority=True, to_count=1),
                         ProtossUnit(UnitTypeId.COLOSSUS, priority=True, to_count=3),
                         Tech(UpgradeId.EXTENDEDTHERMALLANCE),
-                        ProtossUnit(UnitTypeId.STALKER, priority=True),
+                        ProtossUnit(UnitTypeId.STALKER, priority=True, to_count=8),
+                        ProtossUnit(UnitTypeId.STALKER, priority=True, to_count=16, only_once=True),
                         Tech(UpgradeId.CHARGE),
-                        Step(Minerals(400), GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=10, priority=True),),
-                        Step(Minerals(1000), ProtossUnit(UnitTypeId.ZEALOT, priority=True)),
+                        GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=12, priority=True),
+                        ProtossUnit(UnitTypeId.ZEALOT, priority=True)
                     )
                 )
             )

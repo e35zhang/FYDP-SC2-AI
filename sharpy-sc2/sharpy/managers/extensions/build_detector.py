@@ -294,14 +294,17 @@ class BuildDetector(ManagerBase):
 
 
     def _terran_rushes(self):
-        only_cc_seen = False
 
+        if self.ai.time > 12*60:
+            return self._set_rush(EnemyRushBuild.PVTLateGameMacro)
+
+        only_cc_seen = False
         for enemy_cc in self.cache.enemy(
                 [UnitTypeId.COMMANDCENTER, UnitTypeId.ORBITALCOMMAND, UnitTypeId.PLANETARYFORTRESS]
         ):  # type: Unit
             if enemy_cc.position == self.zone_manager.enemy_main_zone.center_location:
                 only_cc_seen = True
-            else:
+            elif self.rush_build != EnemyRushBuild.PVTLateGameMacro:
                 return self._set_rush(EnemyRushBuild.Start)  # enemy has expanded, no rush detection
 
         if self.ai.time < 120:
@@ -327,6 +330,8 @@ class BuildDetector(ManagerBase):
 
             if barracks + factories > 2:
                 return self._set_rush(EnemyRushBuild.OneBaseTech)
+
+
 
     def _zerg_rushes(self):
         # Pool12 = 200

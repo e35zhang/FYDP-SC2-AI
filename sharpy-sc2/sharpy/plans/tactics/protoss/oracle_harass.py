@@ -48,7 +48,7 @@ class OracleHarass(ActBase):
                         if harass_oracle.distance_to(position) <= 4 and harass_oracle.energy >= 50:
                             self.reached_position[oracle_index] = True
                         elif harass_oracle.shield_percentage >= 0.3:
-                            enemy_workers = self.knowledge.unit_cache.enemy_in_range(harass_oracle.position3d,
+                            enemy_workers = self.knowledge.unit_cache.enemy_in_range(harass_oracle.position,
                                                                                      7).of_type(
                                 [UnitTypeId.SCV, UnitTypeId.PROBE, UnitTypeId.DRONE, UnitTypeId.MULE]
                             )
@@ -81,7 +81,7 @@ class OracleHarass(ActBase):
             if not self.already_begin_attack[oracle_index]:
 
                 harass_oracle.move(attack_point)
-                enemy_workers = self.knowledge.unit_cache.enemy_in_range(harass_oracle.position3d, 7).of_type(
+                enemy_workers = self.knowledge.unit_cache.enemy_in_range(harass_oracle.position, 7).of_type(
                     [UnitTypeId.SCV, UnitTypeId.PROBE, UnitTypeId.DRONE, UnitTypeId.MULE]
                 )
                 # worth activate weapon
@@ -125,9 +125,9 @@ class OracleHarass(ActBase):
     def oracle_in_danger(self, oracle_index):
         harass_oracle: Unit = self.knowledge.unit_cache.by_tag(self.oracle_tags[oracle_index])
         if harass_oracle:
-            enemy_anti_air_units = self.knowledge.unit_cache.enemy_in_range(harass_oracle.position3d, 11) \
+            enemy_anti_air_units = self.knowledge.unit_cache.enemy_in_range(harass_oracle.position, 11) \
                 .filter(lambda unit: unit.can_attack_air).visible
-            enemy_anti_air_structure = self.knowledge.unit_cache.enemy_in_range(harass_oracle.position3d, 11) \
+            enemy_anti_air_structure = self.knowledge.unit_cache.enemy_in_range(harass_oracle.position, 11) \
                 .of_type(UnitTypeId.BUNKER)
             for AA in enemy_anti_air_units:
                 if AA.position.distance_to(harass_oracle) < AA.air_range + 5:
@@ -141,21 +141,21 @@ class OracleHarass(ActBase):
     def oracle_evasive_move_to(self, oracle_index, position_to):
         harass_oracle: Unit = self.knowledge.unit_cache.by_tag(self.oracle_tags[oracle_index])
         if harass_oracle is not None:
-            enemy_anti_air_structure = self.knowledge.unit_cache.enemy_in_range(harass_oracle.position3d, 11) \
+            enemy_anti_air_structure = self.knowledge.unit_cache.enemy_in_range(harass_oracle.position, 11) \
                 .of_type(UnitTypeId.BUNKER)
-            enemy_anti_air_units = self.knowledge.unit_cache.enemy_in_range(harass_oracle.position3d, 11) \
+            enemy_anti_air_units = self.knowledge.unit_cache.enemy_in_range(harass_oracle.position, 11) \
                 .filter(lambda unit: unit.can_attack_air).visible
 
             if (enemy_anti_air_units.exists or enemy_anti_air_structure.exists) and \
                     harass_oracle.shield_percentage <= 0.3:
                 position = harass_oracle.position3d
                 for aa in enemy_anti_air_units:
-                    distance = harass_oracle.distance_to(aa.position3d)
+                    distance = harass_oracle.distance_to(aa.position)
                     if distance > 0:
                         amount_of_evade = 20 - distance
                         position = position.towards(aa, - amount_of_evade)
                 for aa in enemy_anti_air_structure:
-                    distance = harass_oracle.distance_to(aa.position3d)
+                    distance = harass_oracle.distance_to(aa.position)
                     if distance > 0:
                         amount_of_evade = 15 - distance
                         position = position.towards(aa, - amount_of_evade)
