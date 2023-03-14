@@ -294,7 +294,10 @@ class BuildDetector(ManagerBase):
 
 
     def _terran_rushes(self):
-
+        if self.ai.time < 5*60:
+            return self._set_rush(EnemyRushBuild.Start)
+        if self.ai.time > 5*60 and self.ai.time < 12*60:
+            return self._set_rush(EnemyRushBuild.PVTMidGameMacro)
         if self.ai.time > 12*60:
             return self._set_rush(EnemyRushBuild.PVTLateGameMacro)
 

@@ -20,6 +20,11 @@ from sharpy.combat import MoveType
 from sharpy.general.extended_power import ExtendedPower
 from typing import TYPE_CHECKING
 
+from sc2.ids.unit_typeid import UnitTypeId
+from sc2.ids.upgrade_id import UpgradeId
+from sc2.ids.ability_id import AbilityId
+from sc2.data import Race
+
 if TYPE_CHECKING:
     from sharpy.managers.core import *
     from sharpy.knowledges import Knowledge
@@ -225,9 +230,9 @@ class PlanZoneAttack(ActBase):
         elif zone_count == 2 and enemy_natural.is_enemys:
             enemy_total_power.add_units(enemy_natural.enemy_static_defenses)
 
-            # if (self.knowledge.enemy_race == Race.Terran
-            #         and self.knowledge.enemy_units_manager.unit_count(UnitTypeId.SIEGETANK) > 1):
-            #     multiplier = 1.6
+            if (self.knowledge.enemy_race == Race.Terran
+                and self.knowledge.unit_cache.enemy(UnitTypeId.SIEGETANKSIEGED).amount > 3):
+                multiplier = 2
 
         enemy_total_power.power = max(self.start_attack_power, enemy_total_power.power)
 
@@ -275,8 +280,12 @@ class PlanZoneAttack(ActBase):
             #                f' {own_local_power.power:.2f} own local power '
             #                f'against {enemy_local_power.power:.2f} enemy local power.')
             #     return AttackStatus.Withdraw
+        multiplier = 1
+        if (self.knowledge.enemy_race == Race.Terran
+                and self.knowledge.unit_cache.enemy(UnitTypeId.SIEGETANKSIEGED).amount > 3):
+            multiplier = 2
 
-        if enemy_local_power.is_enough_for(own_local_power, self.retreat_multiplier):
+        if enemy_local_power.is_enough_for(own_local_power, multiplier * self.retreat_multiplier):
             # Start retreat next turn
             self.print(
                 f"Retreat started at {own_local_power.power:.2f} own local power "
