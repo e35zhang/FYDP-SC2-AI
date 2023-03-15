@@ -14,6 +14,9 @@ from sharpy.plans.protoss import *
 
 def pvt_fourgates() -> BuildOrder:
     return BuildOrder(
+        Step(EnemyUnitExists(UnitTypeId.WIDOWMINE), ProtossUnit(UnitTypeId.OBSERVER, priority=True, to_count=2)),
+        Step(EnemyUnitExists(UnitTypeId.WIDOWMINEBURROWED),
+             ProtossUnit(UnitTypeId.OBSERVER, priority=True, to_count=2)),
         SequentialList(
             Workers(14),
             GridBuilding(unit_type=UnitTypeId.PYLON, to_count=1, priority=True),
@@ -42,6 +45,7 @@ def pvt_fourgates() -> BuildOrder:
             ProtossUnit(UnitTypeId.STALKER, priority=True, to_count=4, only_once=True),
             BuildOrder(
                 AutoPylon(),
+                ProtossUnit(UnitTypeId.OBSERVER, to_count=1, priority=True),
                 ProtossUnit(UnitTypeId.STALKER, priority=True),
             )
         ),

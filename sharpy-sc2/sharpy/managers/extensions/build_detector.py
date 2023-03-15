@@ -298,8 +298,12 @@ class BuildDetector(ManagerBase):
         #    return self._set_rush(EnemyRushBuild.Start)
         #if self.ai.time > 5*60 and self.ai.time < 12*60:
         #    return self._set_rush(EnemyRushBuild.PVTMidGameMacro)
+
         if self.ai.time > 12*60:
             return self._set_rush(EnemyRushBuild.PVTLateGameMacro)
+
+        if self.ai.time > 5*60 and self.rush_build != EnemyRushBuild.PVTLateGameMacro:
+            return self._set_rush(EnemyRushBuild.PVTMidGameMacro)
 
         only_cc_seen = False
         for enemy_cc in self.cache.enemy(

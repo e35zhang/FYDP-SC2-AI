@@ -14,6 +14,8 @@ from sharpy.plans.protoss import *
 
 def pvt_start_up() -> BuildOrder:
     return BuildOrder(
+        Step(EnemyUnitExists(UnitTypeId.WIDOWMINE), ProtossUnit(UnitTypeId.OBSERVER, priority=True, to_count=2)),
+        Step(EnemyUnitExists(UnitTypeId.WIDOWMINEBURROWED), ProtossUnit(UnitTypeId.OBSERVER, priority=True, to_count=2)),
         SequentialList(
             Workers(13),
             GridBuilding(unit_type=UnitTypeId.PYLON, to_count=1, priority=True),
@@ -45,17 +47,18 @@ def pvt_start_up() -> BuildOrder:
                     GridBuilding(unit_type=UnitTypeId.ROBOTICSFACILITY, to_count=1, priority=True),
                     ProtossUnit(UnitTypeId.STALKER, priority=True, to_count=2, only_once=True),
                     GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=4, priority=True),
+                    ProtossUnit(UnitTypeId.STALKER, priority=True, to_count=4, only_once=True),
+                    ProtossUnit(UnitTypeId.OBSERVER, priority=True, to_count=1, only_once=True),
                     ProtossUnit(UnitTypeId.STALKER, priority=True, to_count=5, only_once=True),
                     BuildGas(3),
-                    ProtossUnit(UnitTypeId.SENTRY, priority=True, to_count=1, only_once=True),
-                    ProtossUnit(UnitTypeId.WARPPRISM, priority=True, to_count=1),
-                    ProtossUnit(UnitTypeId.STALKER, priority=True, to_count=12, only_once=True),
+                    ProtossUnit(UnitTypeId.OBSERVER, priority=True, to_count=2, only_once=True),
                     BuildOrder(
                         Expand(3),
                         DefensivePylons(2),
                         BuildGas(4),
                         GridBuilding(unit_type=UnitTypeId.ROBOTICSBAY, to_count=1, priority=True),
                         DefensiveCannons(0, 1, 2),
+                        ProtossUnit(UnitTypeId.STALKER, priority=True, to_count=12, only_once=True),
                         ProtossUnit(UnitTypeId.WARPPRISM, priority=True, to_count=1),
                         ProtossUnit(UnitTypeId.COLOSSUS, priority=True, to_count=3),
                         Tech(UpgradeId.EXTENDEDTHERMALLANCE),

@@ -16,7 +16,7 @@ high_priority: Dict[UnitTypeId, int] = {
     UnitTypeId.GHOST: 10,
     UnitTypeId.REAPER: 8,
     UnitTypeId.MARAUDER: 4,
-    UnitTypeId.MARINE: 8,
+    UnitTypeId.MARINE: 31,
     UnitTypeId.CYCLONE: 4,
     UnitTypeId.HELLION: 8,
     UnitTypeId.HELLIONTANK: 3,

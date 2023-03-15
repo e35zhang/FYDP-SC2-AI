@@ -230,9 +230,14 @@ class PlanZoneAttack(ActBase):
         elif zone_count == 2 and enemy_natural.is_enemys:
             enemy_total_power.add_units(enemy_natural.enemy_static_defenses)
 
-            if (self.knowledge.enemy_race == Race.Terran
-                and self.knowledge.unit_cache.enemy(UnitTypeId.SIEGETANKSIEGED).amount > 3):
-                multiplier = 2
+            if self.knowledge.enemy_race == Race.Terran:
+                sieged = self.knowledge.unit_cache.enemy(UnitTypeId.SIEGETANKSIEGED).amount
+                if self.knowledge.unit_cache.own(UnitTypeId.ZEALOT).amount < 10 and sieged >= 3:
+                    return False
+                if sieged >= 3:
+                    multiplier = 2
+                else:
+                    multiplier = 1
 
         enemy_total_power.power = max(self.start_attack_power, enemy_total_power.power)
 

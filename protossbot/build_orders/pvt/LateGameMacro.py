@@ -13,6 +13,10 @@ from sharpy.plans.protoss import *
 
 def pvt_late_game_macro() -> BuildOrder:
     return BuildOrder(
+        Step(EnemyUnitExists(UnitTypeId.WIDOWMINE), ProtossUnit(UnitTypeId.OBSERVER, priority=True, to_count=2)),
+        Step(EnemyUnitExists(UnitTypeId.WIDOWMINEBURROWED),
+             ProtossUnit(UnitTypeId.OBSERVER, priority=True, to_count=2)),
+
         AutoWorker(),
         AutoPylon(),
         GridBuilding(unit_type=UnitTypeId.CYBERNETICSCORE, to_count=1),
@@ -79,11 +83,10 @@ def pvt_late_game_macro() -> BuildOrder:
         ProtossUnit(UnitTypeId.OBSERVER, priority=True, to_count=1),
         ProtossUnit(UnitTypeId.DISRUPTOR, priority=True, to_count=4),
 
-        ProtossUnit(UnitTypeId.VOIDRAY, priority=True, to_count=6),
         ProtossUnit(UnitTypeId.CARRIER, priority=True, to_count=9),
         ProtossUnit(UnitTypeId.MOTHERSHIP, priority=True, to_count=1),
 
-        ProtossUnit(UnitTypeId.HIGHTEMPLAR, priority=True, to_count=2),
+        ProtossUnit(UnitTypeId.HIGHTEMPLAR, priority=True, to_count=4),
         ProtossUnit(UnitTypeId.COLOSSUS, priority=True, to_count=3),
         ProtossUnit(UnitTypeId.STALKER, priority=True, to_count=10),
 

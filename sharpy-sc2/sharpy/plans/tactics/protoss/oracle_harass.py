@@ -23,7 +23,7 @@ class OracleHarass(ActBase):
     async def execute(self) -> bool:
         if self.ended:
             return True
-        if self.ai.time > 6*60:
+        if self.ai.time > 6*60+40:
             self.ended = True
             return True
         oracles = self.knowledge.unit_cache.own(UnitTypeId.ORACLE).ready
