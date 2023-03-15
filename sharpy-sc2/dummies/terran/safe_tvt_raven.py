@@ -224,7 +224,8 @@ class TerranSafeTvT(KnowledgeBot):
             CallMule(50),
             LowerDepots(),
             [
-                Step(None, SpeedMining(), lambda ai: ai.client.game_step > 5),
+                #Step(None, SpeedMining(), lambda ai: ai.client.game_step > 5),
+                DistributeWorkers(),
                 Repair(),
                 ContinueBuilding(),
                 PlanZoneGather(),

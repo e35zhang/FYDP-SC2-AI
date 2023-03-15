@@ -16,6 +16,7 @@ from .after_early_pool import pvz_after_early_pool
 
 def counterLingRush() -> BuildOrder:
     return BuildOrder(
+        ProtossUnit(UnitTypeId.ORACLE, 1, priority=True),
         SequentialList(
             GridBuilding(unit_type=UnitTypeId.CYBERNETICSCORE, to_count=1, priority=True),
             ProtossUnit(UnitTypeId.ZEALOT, 1, only_once=True, priority=True),
@@ -36,7 +37,6 @@ def counterLingRush() -> BuildOrder:
 
 def common_strategy() -> SequentialList:
     return SequentialList(
-        OracleHarass(),
         DistributeWorkers(),
         PlanHallucination(),
         HallucinatedPhoenixScout(),

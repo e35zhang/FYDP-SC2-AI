@@ -288,32 +288,31 @@ class BuildDetector(ManagerBase):
                     return
                 self._set_rush(EnemyRushBuild.PVPMidGameMacro)
 
-        if self.ai.time > 12*60:
+        if self.ai.time > 12 * 60:
             self._set_rush(EnemyRushBuild.PVPLateGameMacro)
             return
 
-
     def _terran_rushes(self):
-        #if self.ai.time < 5*60:
+        # if self.ai.time < 5*60:
         #    return self._set_rush(EnemyRushBuild.Start)
-        #if self.ai.time > 5*60 and self.ai.time < 12*60:
+        # if self.ai.time > 5*60 and self.ai.time < 12*60:
         #    return self._set_rush(EnemyRushBuild.PVTMidGameMacro)
 
-        if self.ai.time > 12*60:
+        if self.ai.time > 12 * 60:
             return self._set_rush(EnemyRushBuild.PVTLateGameMacro)
 
-        if self.ai.time > 5*60+30 and self.rush_build != EnemyRushBuild.PVTLateGameMacro:
+        if self.ai.time > 5 * 60 + 30 and self.rush_build != EnemyRushBuild.PVTLateGameMacro:
             return self._set_rush(EnemyRushBuild.PVTMidGameMacro)
 
         only_cc_seen = False
         enemy_ccs = self.cache.enemy(
-                [UnitTypeId.COMMANDCENTER, UnitTypeId.ORBITALCOMMAND, UnitTypeId.PLANETARYFORTRESS]
+            [UnitTypeId.COMMANDCENTER, UnitTypeId.ORBITALCOMMAND, UnitTypeId.PLANETARYFORTRESS]
         )
         for enemy_cc in enemy_ccs:  # type: Unit
             if enemy_cc.position == self.zone_manager.enemy_main_zone.center_location:
                 only_cc_seen = True
 
-        if self.ai.time < 1*60 + 50:
+        if self.ai.time < 1 * 60 + 50:
             if self.rush_build == EnemyRushBuild.Start:
                 if enemy_ccs.amount == 2:
                     return self._set_rush(EnemyRushBuild.Start)  # enemy has expanded, no rush detection
@@ -342,15 +341,13 @@ class BuildDetector(ManagerBase):
             if barracks + factories >= 2 or gas_count >= 2:
                 return self._set_rush(EnemyRushBuild.OneBaseTech)
 
-        if 3*60 + 50 < self.ai.time < 4*60 and enemy_ccs.amount > 1:
+        if 3 * 60 + 50 < self.ai.time < 4 * 60 and enemy_ccs.amount > 1:
             marine_count = self.ai.enemy_units(UnitTypeId.MARINE).amount
             rax_count = self.ai.enemy_structures(UnitTypeId.BARRACKS).amount
             if marine_count >= 5 or rax_count >= 2:
                 return self._set_rush(EnemyRushBuild.ThreeRaxStim)
             elif self.rush_build != EnemyRushBuild.ThreeRaxStim:
                 return self._set_rush(EnemyRushBuild.RaxFactPort)
-
-
 
     def _zerg_rushes(self):
         # Pool12 = 200
@@ -361,14 +358,24 @@ class BuildDetector(ManagerBase):
         # PVZMidGameMacro = 220
 
         # PVZLateGameMacro = 230
-        if self.ai.time > 8*60:
+        if self.ai.time > 8 * 60:
             return self._set_rush(EnemyRushBuild.PVZLateGameMacro)
-
-        hatcheries: Units = self.cache.enemy(UnitTypeId.HATCHERY)
-        if len(hatcheries) > 2 or self.enemy_units_manager.enemy_worker_count > 20:
-            # enemy has expanded TWICE or has large amount of workers, that's no rush
-            if self.rush_build != EnemyRushBuild.PVZLateGameMacro:
+        if self.ai.time < 2*60+40:
+            hatcheries: Units = self.cache.enemy(UnitTypeId.HATCHERY)
+            if len(hatcheries) == 3 or self.enemy_units_manager.enemy_worker_count > 25:
                 return self._set_rush(EnemyRushBuild.PVZMidGameMacro)
+
+        if 2 * 60 + 30 < self.ai.time < 3 * 60 + 30:
+            if self.ai.enemy_units(UnitTypeId.ZERGLING).amount >= 6 and \
+                    (self.rush_build == EnemyRushBuild.Start or self.rush_build == EnemyRushBuild.PVZMidGameMacro):
+                return self._set_rush(EnemyRushBuild.LingBaneRush)
+
+            hatcheries: Units = self.cache.enemy(UnitTypeId.HATCHERY)
+            if len(hatcheries) > 2 or self.enemy_units_manager.enemy_worker_count > 20:
+                # enemy has expanded TWICE or has large amount of workers, that's no rush
+                if self.rush_build != EnemyRushBuild.PVZLateGameMacro and \
+                        self.rush_build != EnemyRushBuild.LingBaneRush:
+                    return self._set_rush(EnemyRushBuild.PVZMidGameMacro)
 
         if self.building_started_before(UnitTypeId.ROACHWARREN, 130) or (
                 self.ai.time < 160 and self.cache.enemy(UnitTypeId.ROACH)
@@ -409,7 +416,6 @@ class BuildDetector(ManagerBase):
                 # and self.cache.enemy(UnitTypeId.LARVA).amount >= 3
         ):
             return self._set_rush(EnemyRushBuild.Pool17)
-
 
     def building_started_before(self, type_id: UnitTypeId, start_time_ceiling: int) -> bool:
         """Returns true if a building of type type_id has been started before start_time_ceiling seconds."""

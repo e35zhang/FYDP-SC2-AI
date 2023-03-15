@@ -14,25 +14,22 @@ from sharpy.plans.protoss import *
 
 def pvz_after_early_pool() -> BuildOrder:
     return BuildOrder(
-        ChronoUnit(UnitTypeId.IMMORTAL, UnitTypeId.ROBOTICSFACILITY, 2),
-        ChronoUnit(UnitTypeId.COLOSSUS, UnitTypeId.ROBOTICSFACILITY, 1),
-        ChronoUnit(UnitTypeId.WARPPRISM, UnitTypeId.ROBOTICSFACILITY, 1),
+        ChronoAnyTech(save_to_energy=0),
         SequentialList(
             Tech(UpgradeId.WARPGATERESEARCH),
             Expand(2),
             GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=2, priority=True),
             ProtossUnit(UnitTypeId.ZEALOT, 1, priority=True),
             ProtossUnit(UnitTypeId.ADEPT, 2, priority=True),
-            GridBuilding(unit_type=UnitTypeId.ROBOTICSFACILITY, to_count=1, priority=True),
+            GridBuilding(unit_type=UnitTypeId.TWILIGHTCOUNCIL, to_count=1, priority=True),
             BuildGas(2),
-            GridBuilding(unit_type=UnitTypeId.ROBOTICSBAY, to_count=1, priority=True),
-            GridBuilding(unit_type=UnitTypeId.ROBOTICSFACILITY, to_count=2, priority=True),
-            BuildGas(4),
-            ProtossUnit(UnitTypeId.IMMORTAL, to_count=2, priority=True),
-            ProtossUnit(UnitTypeId.COLOSSUS, to_count=1, priority=True),
+            GridBuilding(unit_type=UnitTypeId.ROBOTICSFACILITY, to_count=1, priority=True),
+            GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=4, priority=True),
+            Tech(UpgradeId.CHARGE),
             ProtossUnit(UnitTypeId.WARPPRISM, to_count=1, priority=True),
             GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=8, priority=True),
-            ProtossUnit(UnitTypeId.OBSERVER, to_count=1, priority=True),
-            ProtossUnit(UnitTypeId.STALKER, priority=True),
         ),
+        ProtossUnit(UnitTypeId.VOIDRAY, priority=True),
+        Step(UnitExists(UnitTypeId.WARPPRISM), ProtossUnit(UnitTypeId.ZEALOT, priority=True),),
+        Step(UnitExists(UnitTypeId.ZEALOT, 8), OracleHarass()),
     )
