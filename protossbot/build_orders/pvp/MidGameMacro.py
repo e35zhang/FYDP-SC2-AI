@@ -61,7 +61,7 @@ def pvp_mid_game_macro() -> BuildOrder:
 
             ProtossUnit(UnitTypeId.ADEPT, 4, only_once=True, priority=True),
 
-            Step(Supply(90),
+            Step(Supply(70),
                  Expand(3, priority=True)),
             Step(EnemyUnitExists(UnitTypeId.NEXUS, 3), Expand(3, priority=True)),
             Step(EnemyUnitExists(UnitTypeId.PHOTONCANNON, 2), Expand(3, priority=True)),
