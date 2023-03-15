@@ -32,6 +32,7 @@ from .build_orders.pvt.start_up import pvt_start_up
 from .build_orders.pvt.LateGameMacro import pvt_late_game_macro
 from .build_orders.pvt.fourgates import pvt_fourgates
 from .build_orders.pvt.MidGameMacro import pvt_mid_game_micro
+from .build_orders.pvt.anti_three_rax import pvt_anti_3_rax
 
 
 class ProtossBot(KnowledgeBot):
@@ -100,7 +101,7 @@ class ProtossBot(KnowledgeBot):
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.ProxyReaper, pvt_fourgates()),
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.ProxyMarauders, pvt_fourgates()),
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.OneBaseTech, pvt_fourgates()),
-            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.ThreeRaxStim, pvt_start_up()),
+            Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.ThreeRaxStim, pvt_anti_3_rax()),
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.RaxFactPort, pvt_start_up()),
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PVTMidGameMacro, pvt_mid_game_micro()),
             Step(lambda k: k.build_detector.rush_build == EnemyRushBuild.PVTLateGameMacro, pvt_late_game_macro()),

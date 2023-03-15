@@ -342,10 +342,10 @@ class BuildDetector(ManagerBase):
             if barracks + factories >= 2 or gas_count >= 2:
                 return self._set_rush(EnemyRushBuild.OneBaseTech)
 
-        if 120 < self.ai.time < 4*60 and enemy_ccs.amount > 1:
+        if 3*60 + 50 < self.ai.time < 4*60 and enemy_ccs.amount > 1:
             marine_count = self.ai.enemy_units(UnitTypeId.MARINE).amount
             rax_count = self.ai.enemy_structures(UnitTypeId.BARRACKS).amount
-            if marine_count >= 6 or rax_count >= 2:
+            if marine_count >= 5 or rax_count >= 2:
                 return self._set_rush(EnemyRushBuild.ThreeRaxStim)
             elif self.rush_build != EnemyRushBuild.ThreeRaxStim:
                 return self._set_rush(EnemyRushBuild.RaxFactPort)

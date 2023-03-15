@@ -94,7 +94,7 @@ class MicroAdepts(GenericMicro):
                         pos: Point2 = target.position
                         shade.move(pos.towards(unit, -1))
 
-        if self.move_type in {MoveType.SearchAndDestroy, MoveType.Assault} and self.model == CombatModel.RoachToStalker:
+        if self.move_type in {MoveType.SearchAndDestroy, MoveType.Assault}:
             if self.cd_manager.is_ready(unit.tag, AbilityId.ADEPTPHASESHIFT_ADEPTPHASESHIFT):
                 if target is not None:
                     return Action(target.position, False, AbilityId.ADEPTPHASESHIFT_ADEPTPHASESHIFT)
