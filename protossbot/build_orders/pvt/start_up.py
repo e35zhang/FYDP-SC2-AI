@@ -80,6 +80,7 @@ def common_strategy() -> BuildOrder:
     return BuildOrder(
         Step(UnitExists(UnitTypeId.STALKER, 1, include_not_ready=False), DoubleAdeptScout(1)),
         SequentialList(
+            First_Observer_PVT(),
             DistributeWorkers(),
             PlanHallucination(),
             HallucinatedPhoenixScout(),

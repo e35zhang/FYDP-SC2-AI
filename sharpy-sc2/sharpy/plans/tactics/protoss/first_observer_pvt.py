@@ -13,15 +13,11 @@ class First_Observer_PVT(ActBase):
         super().__init__()
         self.first_ob_tag = None
         self.reached_position = False
-        self.ended = False
 
     async def start(self, knowledge: Knowledge):
         await super().start(knowledge)
 
     async def execute(self) -> bool:
-        if self.ended:
-            return True
-
         observers = self.knowledge.unit_cache.own(UnitTypeId.OBSERVER).ready
         position = self.get_first_ob_position()
         if self.first_ob_tag is None:
@@ -37,18 +33,19 @@ class First_Observer_PVT(ActBase):
                 self.roles.refresh_tasks(first_observer)
 
         if not self.reached_position:
-            observer: Unit = self.knowledge.unit_cache.by_tag(self.first_ob_tag)
-            if observer is not None:
-                if observer.distance_to(position) <= 1:
-                    self.reached_position = True
-                    observer(AbilityId.MORPH_SURVEILLANCEMODE)
+            if self.first_ob_tag:
+                observer: Unit = self.knowledge.unit_cache.by_tag(self.first_ob_tag)
+                if observer is not None:
+                    if observer.distance_to(position) <= 1:
+                        self.reached_position = True
+                        observer(AbilityId.MORPH_SURVEILLANCEMODE)
+                    else:
+                        observer.move(position)
                 else:
-                    observer.move(position)
-            else:
-                self.ended = True
+                    return True
 
         return True  # never block
 
     def get_first_ob_position(self):
         return self.knowledge.zone_manager.enemy_expansion_zones[1].center_location. \
-            towards(self.knowledge.zone_manager.our_zones[1].center_location, 22)
+            towards(self.knowledge.zone_manager.own_main_zone.center_location, 22)

@@ -31,6 +31,7 @@ siege = {
     UnitTypeId.BANSHEE,
     UnitTypeId.BATTLECRUISER,
     UnitTypeId.VIKINGFIGHTER,
+    UnitTypeId.MEDIVAC,
     # Protoss
     UnitTypeId.COLOSSUS,
     UnitTypeId.CARRIER,

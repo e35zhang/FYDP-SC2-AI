@@ -39,13 +39,14 @@ def pvt_fourgates() -> BuildOrder:
             ChronoUnit(UnitTypeId.ADEPT, UnitTypeId.GATEWAY, 2),
             GridBuilding(unit_type=UnitTypeId.ROBOTICSFACILITY, to_count=1, priority=True),
             ProtossUnit(UnitTypeId.STALKER, priority=True, to_count=2, only_once=True),
-            GridBuilding(unit_type=UnitTypeId.PYLON, to_count=3, priority=True),
+            DefensivePylons(to_base_index=0),
             GridBuilding(unit_type=UnitTypeId.GATEWAY, to_count=4, priority=True),
-            ProtossUnit(UnitTypeId.WARPPRISM, priority=True, to_count=1),
+            DefensiveCannons(0, 1, 0),
+            ProtossUnit(UnitTypeId.OBSERVER, to_count=1, priority=True),
             ProtossUnit(UnitTypeId.STALKER, priority=True, to_count=4, only_once=True),
             BuildOrder(
                 AutoPylon(),
-                ProtossUnit(UnitTypeId.OBSERVER, to_count=1, priority=True),
+                ProtossUnit(UnitTypeId.WARPPRISM, to_count=1, priority=True),
                 ProtossUnit(UnitTypeId.STALKER, priority=True),
             )
         ),

@@ -302,19 +302,23 @@ class BuildDetector(ManagerBase):
         if self.ai.time > 12*60:
             return self._set_rush(EnemyRushBuild.PVTLateGameMacro)
 
-        if self.ai.time > 5*60 and self.rush_build != EnemyRushBuild.PVTLateGameMacro:
+        if self.ai.time > 5*60+30 and self.rush_build != EnemyRushBuild.PVTLateGameMacro:
             return self._set_rush(EnemyRushBuild.PVTMidGameMacro)
 
         only_cc_seen = False
-        for enemy_cc in self.cache.enemy(
+        enemy_ccs = self.cache.enemy(
                 [UnitTypeId.COMMANDCENTER, UnitTypeId.ORBITALCOMMAND, UnitTypeId.PLANETARYFORTRESS]
-        ):  # type: Unit
+        )
+        for enemy_cc in enemy_ccs:  # type: Unit
             if enemy_cc.position == self.zone_manager.enemy_main_zone.center_location:
                 only_cc_seen = True
-            elif self.rush_build != EnemyRushBuild.PVTLateGameMacro:
-                return self._set_rush(EnemyRushBuild.Start)  # enemy has expanded, no rush detection
 
-        if self.ai.time < 120:
+        if self.ai.time < 1*60 + 50:
+            if self.rush_build == EnemyRushBuild.Start:
+                if enemy_ccs.amount == 2:
+                    return self._set_rush(EnemyRushBuild.Start)  # enemy has expanded, no rush detection
+
+        if self.ai.time < 120 and only_cc_seen:
             # early game and we have seen enemy CC
             close_barracks = (
                 self.ai.enemy_structures(UnitTypeId.BARRACKS)
@@ -334,9 +338,17 @@ class BuildDetector(ManagerBase):
 
             if self.ai.time > 110 and close_barracks == 0 and factories == 0 and only_cc_seen:
                 return self._set_rush(EnemyRushBuild.ProxyReaper)
-
-            if barracks + factories > 2:
+            gas_count = self.ai.enemy_structures(UnitTypeId.REFINERY).amount
+            if barracks + factories >= 2 or gas_count >= 2:
                 return self._set_rush(EnemyRushBuild.OneBaseTech)
+
+        if 120 < self.ai.time < 4*60 and enemy_ccs.amount > 1:
+            marine_count = self.ai.enemy_units(UnitTypeId.MARINE).amount
+            rax_count = self.ai.enemy_structures(UnitTypeId.BARRACKS).amount
+            if marine_count >= 6 or rax_count >= 2:
+                return self._set_rush(EnemyRushBuild.ThreeRaxStim)
+            elif self.rush_build != EnemyRushBuild.ThreeRaxStim:
+                return self._set_rush(EnemyRushBuild.RaxFactPort)
 
 
 
