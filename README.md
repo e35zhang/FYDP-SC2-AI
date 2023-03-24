@@ -34,4 +34,5 @@ published bot(s) will be in `publish` folder
 Mark sharpy-sc2 and sharpy-sc2/python directories as source roots.
 
 ## Documentation 
-Refer to [design documentation](https://github.com/e35zhang/FYDP-SC2-AI/wiki) for features
+Refer to [design documentation](https://github.com/e35zhang/FYDP-SC2-AI/wiki) for overview.
+Refer to [Project Report](https://github.com/e35zhang/FYDP-SC2-AI/Project_Report.pdf) for detailed design.
